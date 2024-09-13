@@ -10,7 +10,7 @@ module org.studyhawk {
     requires jdk.jshell;
 
     opens org.studyhawk to javafx.fxml;
-    opens org.studyhawk.Controllers to javafx.fxml;
+//    opens org.studyhawk.Controllers to javafx.fxml;
     exports org.studyhawk;
-    exports org.studyhawk.Controllers;
+//    exports org.studyhawk.Controllers;
 }

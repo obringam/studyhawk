@@ -1,3 +1,5 @@
+package org.studyhawk.Components;
+
 public class Card{
     private String term;
     private String definition;
