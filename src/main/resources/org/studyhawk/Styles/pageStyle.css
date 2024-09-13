@@ -1,0 +1,12 @@
+@font-face {
+    src: url('../Fonts/Nunito-Regular.ttf');
+}
+
+@font-face {
+    src: url('../Fonts/Nunito-Bold.ttf');
+}
+
+.page {
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: 'Nunito';
+}
