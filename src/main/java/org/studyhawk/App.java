@@ -7,6 +7,7 @@ import org.studyhawk.Components.Deck;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class App extends Application {
 
@@ -22,16 +23,26 @@ public class App extends Application {
 
         ArrayList<Deck> deckList = new ArrayList<Deck>();
 
-        Deck dogs = new Deck("Dogs", "Dogs and their Behaviors.");
-        deckList.add(dogs);
-        Card blackLab = new Card("Black Lab", "Black Labrador Retrievers are a British breed of dog that originated in Newfoundland and the United Kingdom. They are known for being intelligent, outgoing, and even-tempered.");
-        Card newfoundland = new Card("Newfoundland", "The Newfoundland is a large breed of working dog. They can be black, grey, brown, or black and white. However, in the Dominion of Newfoundland, before it became part of the confederation of Canada, only black and Landseer coloured dogs were considered to be proper members of the breed.");
-        dogs.addCard(blackLab);
-        dogs.addCard(newfoundland);
-        dogs.listDeck();
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        do {
+            System.out.println("1. Create Deck");
+            System.out.println("2. Create Card");
+            System.out.println("3. List Deck");
+            System.out.println("4. Exit");
+            input = scanner.nextLine();
 
-        listDecks(deckList);
-
+            if (input.equals("1")) {
+                System.out.println("Enter the name of the deck: ");
+                String title = scanner.nextLine();
+                System.out.println("Enter a deck description: ");
+                String description = scanner.nextLine();
+                deckList.add(new Deck(title, description));
+            }
+            if (input.equals("3")) {
+                listDecks(deckList);
+            }
+        } while(!input.equals(4));
     }
 
     private static void listDecks(ArrayList<Deck> deckList) {
