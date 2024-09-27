@@ -1,15 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>StudyHawk</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="../static/css/index.css" th:href="@{/css/index.css}" type="text/css" />
-</head>
-<body>
-    <header>
-        <div class="header-content">
-            <h1>StudyHawk</h1>
+    <head>
+        <title>StudyHawk</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" href="../static/css/index.css" th:href="@{/css/index.css}" type="text/css" />
+    </head>
+    <body>
+        <header>
+            <div class="title">
+                <h1><i><u>Study Hawk</u></i></h1>
+            </div>
+
+            <div class="hamburger-menu">
+                <div class="hamburger-menu-top"></div>
+                <div class="hamburger-menu-mid"></div>
+                <div class="hamburger-menu-bot"></div>
+            </div>
+        </header>
+        <h2 class="deck-label">Your Decks</h2>
+        <div class="decks">
+            <div class="title">
+                <h3>Title</h3>
+                <p>Dog Breeds</p>
+            </div>
+            <hr>
+            <div class="description">
+                <h3>Description</h3>
+                <p>This Deck is used to study different dog breeds</p>
+            </div>
         </div>
-    </header>
-</body>
+        <div class="def-button">
+            <button>Show Definition</button>
+        </div>
+    </body>
 </html>
