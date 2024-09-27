@@ -1,38 +1,60 @@
-:root {
+* {
     padding: 0;
     margin: 0;
-
-    --header-height: 60px;
 }
-
-h1 {
-    color: white;
-}
-
-body {
-    font-family: Roboto, Arial, sans-serif;
-}
-
-header {
-    left: 0;
-    top: 0;
-    position: fixed;
-    background-color: #eb4b62;
-    height: var(--header-height);
+header .title {
+    text-align: left;
+    font-family: "Roboto", sans-serif;
+    color: #ffffff;
+    background-color: #C41230;
+    padding: 10px;
     width: 100%;
-    display: flex;
-    align-items: center;
 }
 
-.header-content {
-    padding: 0 15px;
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
+.deck-label {
+    text-align: center;
+    margin-top: 10px;
 }
 
-.nav-button {
-    padding: .375rem;
-    width: 2.5rem;
-    height: 2.5rem;
+.decks {
+    border: solid 5px black;
+    background-color: lightgray;
+    padding: 0;
+    margin: auto;
+    margin-top: 10px;
+    width: 65%;
+    border-radius: 25px;
+}
+
+.decks hr {
+    border: solid 1px black;
+}
+.decks .title {
+    text-align: center;
+    font-family: sans-serif;
+    padding: 5px;
+    margin-top: 10px;
+    /*visibility: hidden;*/
+}
+
+.decks .description {
+    text-align: center;
+    font-family: sans-serif;
+    padding: 5px;
+    margin-top: 10px;
+    /*visibility: hidden;*/
+}
+
+.def-button {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.def-button button {
+    background-color: #C41230;
+    color:#ffffff;
+    border-style: none;
+    padding: 10px;
+    border-radius: 25px;
+    visibility: hidden;
 }
