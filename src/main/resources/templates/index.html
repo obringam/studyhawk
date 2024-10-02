@@ -1,36 +1,59 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
     <head>
-        <title>StudyHawk</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link rel="stylesheet" href="../static/css/index.css" th:href="@{/css/index.css}" type="text/css" />
+        <meta charset="utf-8">
+        <title>Study Hawk</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/style.css">
+        <!--Fonts-->
+        <!--Title-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Guides:wght@400..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     </head>
     <body>
         <header>
-            <div class="title">
-                <h1><i><u>Study Hawk</u></i></h1>
-            </div>
-
-            <div class="hamburger-menu">
-                <div class="hamburger-menu-top"></div>
-                <div class="hamburger-menu-mid"></div>
-                <div class="hamburger-menu-bot"></div>
-            </div>
+            <div class="head-bar">
+                <div class="title">
+                    <h1><i><u>Study Hawk</u></i></h1>
+                </div>
+                <div class="dropdown-nav-bar">
+                    <p class="label">Your Stuff <i class="arrow up"></i></p>
+                    <ul class="items">
+                        <li>Profile</li>
+                        <li>Shared Decks</li>
+                        <li>FAQ</li>
+                    </ul>
+                </div>
+                <div class="login">
+                    <p class="button">login/sign up</p>
+                </div>
+            </div> 
         </header>
-        <h2 class="deck-label">Your Decks</h2>
-        <div class="decks">
-            <div class="title">
-                <h3>Title</h3>
-                <p>Dog Breeds</p>
+
+        <div class="main-page">
+            <div class="add-button">
+                <button onclick="duplicate()"><b>+ Add Deck</b></button>
             </div>
-            <hr>
-            <div class="description">
-                <h3>Description</h3>
-                <p>This Deck is used to study different dog breeds</p>
+            <div class="deck-label">
+                <h2>Your Decks</h2>
             </div>
-        </div>
-        <div class="def-button">
-            <button>Show Definition</button>
+    
+            <div>
+                <p id="empty-list"></p>
+            </div>
+    
+            <div class="decks" id="decks">
+                <div class="title">
+                    <h3>Title</h3>
+                    <p>Dog Breeds</p>
+                </div>
+                <hr>
+                <div class="description">
+                    <h3>Description</h3>
+                    <p>This Deck is used to study different dog breeds</p>
+                </div>
+            </div>
         </div>
     </body>
 </html>
