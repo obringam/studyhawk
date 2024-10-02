@@ -1,38 +1,116 @@
-:root {
+* {
     padding: 0;
     margin: 0;
-
-    --header-height: 60px;
 }
 
-h1 {
+header .head-bar {
+    background-color: #C41230;
+    padding: 10px;
+    width: 100%;
+}
+
+header .head-bar .title{
+    text-align: left;
+    font-family: "Roboto", sans-serif;
+    color: #ffffff;
+    display: inline-block;
+    padding-right: 50px;
+}
+
+.dropdown-nav-bar {
+    display: inline-block;
+}
+
+.dropdown-nav-bar .label {
     color: white;
+    font-family: "Roboto", sans-serif;
 }
 
-body {
-    font-family: Roboto, Arial, sans-serif;
+.arrow {
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
 }
 
-header {
-    left: 0;
-    top: 0;
-    position: fixed;
-    background-color: #eb4b62;
-    height: var(--header-height);
-    width: 100%;
-    display: flex;
-    align-items: center;
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}
+  
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
 }
 
-.header-content {
-    padding: 0 15px;
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
+header .head-bar .login {
+    text-align: right;
+    margin-right: 1%;
 }
 
-.nav-button {
-    padding: .375rem;
-    width: 2.5rem;
-    height: 2.5rem;
+.deck-label {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.decks {
+    border: solid 5px black;
+    background-color: lightgray;
+    padding: 0;
+    margin: auto;
+    margin-top: 10px;
+    width: 65%;
+    border-radius: 25px;
+}
+
+.decks:hover {
+    border: solid 5px black;
+    background-color: gray;
+    padding: 0;
+    margin: auto;
+    margin-top: 10px;
+    width: 65%;
+    border-radius: 25px;
+}
+
+.decks hr {
+    border: solid 1px black;
+}
+
+.add-button {
+    text-align: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.add-button button {
+    background-color: lightgray;
+    color: black;
+    border-style: none;
+    padding: 10px;
+    border-radius: 25px;
+}
+
+.add-button button:hover {
+    background-color: gray;
+    color: black;
+    border-style: none;
+    padding: 10px;
+    border-radius: 25px;
+}
+
+.decks .title {
+    text-align: center;
+    font-family: sans-serif;
+    padding: 5px;
+    margin-top: 10px;
+    /*visibility: hidden;*/
+}
+
+.decks .description {
+    text-align: center;
+    font-family: sans-serif;
+    padding: 5px;
+    margin-top: 10px;
+    /*visibility: hidden;*/
 }
