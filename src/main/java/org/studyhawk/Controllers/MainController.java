@@ -14,4 +14,11 @@ public class MainController {
 		return landingPage;
 	}
 
+	@GetMapping("/decks/add")
+	public ModelAndView deck() {
+		ModelAndView landingPage = new ModelAndView();
+		landingPage.setViewName("deck");
+		return landingPage;
+	}
+
 }
