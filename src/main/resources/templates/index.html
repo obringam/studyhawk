@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
     <head>
         <meta charset="utf-8">
         <title>Study Hawk</title>
@@ -56,14 +56,17 @@
                 </div>
             </div>
         </div>
-        <form method="POST">
+        <form action="#" th:action="@{/decks/add}" th:object="${Deck}" method="post">
             <label for="title">Title</label>
-            <input type="text" id="title" value="title">
+            <input type="text" id="title" value="title" th:field="*{title}">
             <br>
             <label for="description">Description</label>
-            <input type="text" id="description" value="What is your deck about?">
+            <input type="text" id="description" value="What is your deck about?" th:field="*{description}">
             <br>
             <input type="submit" id="submit" value="Create Deck">
         </form>
+        <h1>Result</h1>
+        <p th:text="'title: ' + ${Deck.title}"></p>
+        <p th:text="'description: ' + ${Deck.description}"></p>
     </body>
 </html>
