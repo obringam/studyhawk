@@ -1,46 +1,75 @@
 package org.studyhawk.Components;
 
-import java.util.ArrayList;
-
 public class Deck {
+    private int deckID;
     private String title;
     private String description;
     private boolean favorite;
-    private ArrayList<Card> cards = new ArrayList<Card>();
+
+    public Deck() {}
 
     public Deck(String title, String description) {
         this.title = title;
         this.description = description;
-        favorite = false;
+        this.favorite = false;
     }
 
-    /** 
-     * @return boolean
-     */
-    public boolean favorite() {
-        if(favorite == false) {
-            favorite = true;
-        } else {
-            favorite = false;
-        }
-        return favorite;
+    public Deck(String title, String description, boolean favorite) {
+        this.title = title;
+        this.description = description;
+        this.favorite = favorite;
     }
 
-    
-    /** 
-     * @param newCard
-     */
-    public void addCard(Card newCard) {
-        cards.add(newCard);
+    public void setDeckID(int deckID) {
+        this.deckID = deckID;
     }
 
-    public void listDeck() {
-        for (int i = 0; i < cards.size(); i++) {
-            System.out.println(cards.get(i).toString() + "\n");
-        }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public int getDeckID() {
+        return this.deckID;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public boolean getFavorite() {
+        return this.favorite;
+    }
+
+    /**
+     * @return boolean
+     */
+    public boolean favorite() {
+        favorite = !favorite;
+        return favorite;
+    }
+
+    /**
+     * @param newCard
+     */
+    public void addCard(Card newCard) {}
+
+    @Override
+    public String toString() {
+        if (deckID == 0)
+            return String.format("[DECK] Title: %s, Description %s, Favorite: %b", this.title, this.description, this.favorite);
+        else
+            return String.format("[DECK] ID: %d, Title: %s, Description %s, Favorite: %b", this.deckID, this.title, this.description, this.favorite);
     }
 }
