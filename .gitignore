@@ -36,3 +36,4 @@ build/
 
 ### Project ###
 *.db
+database.properties

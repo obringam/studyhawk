@@ -8,6 +8,8 @@ public class Application {
 
 	public static void main(String[] args) {
 
+		DatabaseHandler.testConnection();
+
 		SpringApplication.run(Application.class, args);
 
     }
