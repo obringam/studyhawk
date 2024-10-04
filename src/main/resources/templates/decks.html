@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
     <head>
         <meta charset="utf-8">
         <title>Study Hawk</title>
@@ -39,34 +39,33 @@
             <div class="deck-label">
                 <h2>Your Decks</h2>
             </div>
-    
+
             <div>
                 <p id="empty-list"></p>
             </div>
-    
+
             <div class="decks" id="decks">
-                <div class="title">
-                    <h3>Title</h3>
-                    <p>Dog Breeds</p>
-                </div>
-                <hr>
-                <div class="description">
-                    <h3>Description</h3>
-                    <p>This Deck is used to study different dog breeds</p>
-                </div>
+                <th:block th:each="deck : ${decks}">
+                    <div class="title">
+                        <h3>Title</h3>
+                        <p th:text="${deck.title}"></p>
+                    </div>
+                    <hr>
+                    <div class="description">
+                        <h3>Description</h3>
+                        <p th:text="${deck.description}"></p>
+                    </div>
+                </th:block>
             </div>
         </div>
-        <form action="#" th:action="@{/decks/add}" th:object="${Deck}" method="post">
+        <form method="get" action="/decks/add">
             <label for="title">Title</label>
-            <input type="text" id="title" value="title" th:field="*{title}">
+            <input type="text" id="title" name="title" value="Title your deck"/>
             <br>
             <label for="description">Description</label>
-            <input type="text" id="description" value="What is your deck about?" th:field="*{description}">
+            <input type="text" id="description" name="description" value="What is your deck about?"/>
             <br>
             <input type="submit" id="submit" value="Create Deck">
         </form>
-        <h1>Result</h1>
-        <p th:text="'title: ' + ${Deck.title}"></p>
-        <p th:text="'description: ' + ${Deck.description}"></p>
     </body>
 </html>

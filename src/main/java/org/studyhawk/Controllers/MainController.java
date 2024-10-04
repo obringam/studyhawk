@@ -8,17 +8,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class MainController {
 
 	@GetMapping("/")
-	public ModelAndView index() {
-		ModelAndView landingPage = new ModelAndView();
-		landingPage.setViewName("index");
-		return landingPage;
-	}
-
-	@GetMapping("/decks/add")
-	public ModelAndView deck() {
-		ModelAndView landingPage = new ModelAndView();
-		landingPage.setViewName("deck");
-		return landingPage;
+	public ModelAndView getHomePage() {
+		return new ModelAndView("redirect:/decks");
 	}
 
 }
