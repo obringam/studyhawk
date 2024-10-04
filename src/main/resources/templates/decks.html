@@ -43,9 +43,8 @@
             <div>
                 <p id="empty-list"></p>
             </div>
-
-            <div class="decks" id="decks">
-                <th:block th:each="deck : ${decks}">
+            <th:block th:each="deck : ${decks}"></th:block>
+                <div class="decks" id="decks">
                     <div class="title">
                         <h3>Title</h3>
                         <p th:text="${deck.title}"></p>
@@ -55,8 +54,8 @@
                         <h3>Description</h3>
                         <p th:text="${deck.description}"></p>
                     </div>
-                </th:block>
-            </div>
+                </div>
+            </th:block>
         </div>
         <form method="get" action="/decks/add">
             <label for="title">Title</label>
