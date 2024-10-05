@@ -22,16 +22,13 @@ public class DeckController {
 
         ArrayList<Deck> decks = DatabaseHandler.getDecks();
         model.addObject("decks", decks);
-		// for (int i = 0; i < decks.size(); i++) {
-		// 	model.addObject("deck" + i, decks.get(i));
-		// }
 
 		return model;
 	}
 
     @GetMapping("/decks/add")
     public ModelAndView addDeck(@RequestParam(required = true, name = "title") String title, @RequestParam(required = true, name = "description") String description) {
-        Deck deck = new Deck(title, description);
+        Deck deck = new Deck(title, description, false);
         DatabaseHandler.insertDeck(deck);
         return new ModelAndView("redirect:/decks");
     }

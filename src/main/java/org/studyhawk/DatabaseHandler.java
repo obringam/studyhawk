@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.springframework.boot.autoconfigure.pulsar.PulsarProperties.Transaction;
 import org.studyhawk.Components.*;
 
 /**
@@ -129,6 +128,51 @@ public class DatabaseHandler {
     }
 
     /**
+     * Gets all cards from the database.
+     */
+    public static ArrayList<Card> getCards() {
+
+        ArrayList<Card> cards = new ArrayList<>();
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        // Get cards from database
+        try {
+
+            // Query card data from database
+            String querySQL = "SELECT * FROM studyhawk.Cards";
+            PreparedStatement statement = conn.prepareStatement(querySQL);
+            ResultSet result = statement.executeQuery();
+
+            // Place all card data in ArrayList
+            try {
+                while (result.next()) {
+                    Card card = new Card(
+                        result.getInt("deckID"),
+                        result.getString("term"),
+                        result.getString("definition"),
+                        result.getBoolean("favorite")
+                    );
+                    card.setCardID(result.getInt("cardID"));
+                    cards.add(card);
+                }
+
+            } catch (SQLException parsingFailed) {
+                System.out.println("[ERROR] CARDS PROCESSING FAILED");
+                System.out.println(parsingFailed.getMessage());
+            }
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] CARDS QUERY FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+        return cards;
+
+    }
+
+    /**
      * Inserts a deck into the database
      * @param deck
      */
@@ -154,6 +198,139 @@ public class DatabaseHandler {
         }
 
         DatabaseHandler.closeConnection(conn);
+
+    }
+
+    /**
+     * Inserts a card into the database
+     * @param card The card to insert
+     * @param deck The deck to insert the card into
+     */
+    public static void insertCard(Card card, Deck deck) {
+
+        card.setDeckID(deck.getDeckID());
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        try {
+            String insertSQL = "INSERT INTO studyhawk.Cards (deckID, term, definition, favorite) VALUES(?,?,?,?)";
+            PreparedStatement statement = conn.prepareStatement(insertSQL);
+
+            statement.setInt(1, card.getDeckID());
+            statement.setString(2, card.getTerm());
+            statement.setString(3, card.getDefinition());
+            statement.setBoolean(4, card.getFavorite());
+
+            statement.executeUpdate();
+
+            System.out.printf("[DATABASE] Inserted into Cards table: %s%n", card);
+
+        } catch (SQLException insertFailed) {
+            System.out.println("[ERROR] TABLE INSERT FAILED");
+            System.out.println(insertFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+
+    }
+
+/**
+     * Remove a deck from the database
+     * @param deck The deck to remove
+     */
+    public static boolean removeDeck(Deck deck) {
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        try {
+            DatabaseHandler.removeCardsByDeck(deck, conn); // Remove all existing cards from the deck
+
+            String removeSQL = "DELETE FROM studyhawk.Decks WHERE deckID = (?)";
+            PreparedStatement statement = conn.prepareStatement(removeSQL);
+
+            statement.setInt(1, deck.getDeckID());
+
+            int rowUpdated = statement.executeUpdate();
+
+            if (rowUpdated > 0) {
+                System.out.printf("[DATABASE] Removed from Decks table: %s%n", deck);
+                DatabaseHandler.closeConnection(conn);
+                return true;
+            } else {
+                System.out.println("[ERROR] COULD NOT DELETE DECK. DECK DOES NOT EXIST");
+            }
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] DELETING DECK FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+        return false;
+
+    }
+
+    /**
+     * Remove a card from the database
+     * @param card The card to remove
+     */
+    public static boolean removeCard(Card card) {
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        try {
+            String removeSQL = "DELETE FROM studyhawk.Cards WHERE cardID = (?)";
+            PreparedStatement statement = conn.prepareStatement(removeSQL);
+
+            statement.setInt(1, card.getCardID());
+
+            int rowUpdated = statement.executeUpdate();
+
+            if (rowUpdated > 0) {
+                System.out.printf("[DATABASE] Removed from Cards table: %s%n", card);
+                DatabaseHandler.closeConnection(conn);
+                return true;
+            } else {
+                System.out.println("[ERROR] COULD NOT DELETE CARD. CARD DOES NOT EXIST");
+            }
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] DELETING CARD FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+        return false;
+
+    }
+
+    /**
+     * Removes any cards within a given deck
+     * @param card The card to remove
+     * @param connection The connection passed to the method. This indicates this
+     * method should only be used within the DatabaseHandler
+     */
+    private static boolean removeCardsByDeck(Deck deck, Connection conn) {
+
+        try {
+            String removeSQL = "DELETE FROM studyhawk.Cards WHERE deckID = (?)";
+            PreparedStatement statement = conn.prepareStatement(removeSQL);
+
+            statement.setInt(1, deck.getDeckID());
+
+            int rowUpdated = statement.executeUpdate();
+
+            if (rowUpdated > 0) {
+                System.out.printf("[DATABASE] Removed existing cards from deck: %s%n", deck);
+                return true;
+            }
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] DELETING CARDS FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        return false;
 
     }
 

@@ -8,12 +8,6 @@ public class Deck {
 
     public Deck() {}
 
-    public Deck(String title, String description) {
-        this.title = title;
-        this.description = description;
-        this.favorite = false;
-    }
-
     public Deck(String title, String description, boolean favorite) {
         this.title = title;
         this.description = description;
