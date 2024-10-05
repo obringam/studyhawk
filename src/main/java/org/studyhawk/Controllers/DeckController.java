@@ -38,7 +38,6 @@ public class DeckController {
     @GetMapping("/decks/remove")
     public ModelAndView removeDeck(@RequestParam(required = true, name = "deck") String deckID) {
         try {
-            System.out.println(deckID);
             int ID = Integer.parseInt(deckID);
             Deck targetDeck = DatabaseHandler.getDeckByID(ID);
             DatabaseHandler.removeDeck(targetDeck);
