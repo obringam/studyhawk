@@ -127,6 +127,46 @@ public class DatabaseHandler {
 
     }
 
+    public static Deck getDeckByID(int ID) {
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        // Get deck from database
+        try {
+            String querySQL = "SELECT * FROM studyhawk.Decks WHERE deckID = (?)";
+            PreparedStatement statement = conn.prepareStatement(querySQL);
+
+            statement.setInt(1, ID);
+
+            ResultSet result = statement.executeQuery();
+
+            // Create deck object
+            try {
+                result.next();
+                Deck deck = new Deck(
+                    result.getString("title"),
+                    result.getString("description"),
+                    result.getBoolean("favorite")
+                );
+                deck.setDeckID(result.getInt("deckID"));
+                DatabaseHandler.closeConnection(conn);
+                return deck;
+
+            } catch (SQLException parsingFailed) {
+                System.out.println("[ERROR] DECK PROCESSING FAILED");
+                System.out.println(parsingFailed.getMessage());
+            }
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] DECK QUERY FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+        return null;
+
+    }
+
     /**
      * Gets all cards from the database.
      */
@@ -234,7 +274,7 @@ public class DatabaseHandler {
 
     }
 
-/**
+    /**
      * Remove a deck from the database
      * @param deck The deck to remove
      */
