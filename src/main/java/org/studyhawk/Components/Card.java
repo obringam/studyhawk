@@ -2,18 +2,19 @@ package org.studyhawk.Components;
 
 public class Card{
     private int cardID;
+    private int deckID;
     private String term;
     private String definition;
     private boolean favorite;
 
     public Card() {}
 
-    public Card(String term, String definition) {
-        this.term = term;
-        this.definition = definition;
+    public Card(String term, String definition, boolean favorite) {
+        this(0, term, definition, favorite);
     }
 
-    public Card(String term, String definition, boolean favorite) {
+    public Card(int deckID, String term, String definition, boolean favorite) {
+        this.deckID = deckID;
         this.term = term;
         this.definition = definition;
         this.favorite = favorite;
@@ -21,6 +22,10 @@ public class Card{
 
     public void setCardID(int cardID) {
         this.cardID = cardID;
+    }
+
+    public void setDeckID(int deckID) {
+        this.deckID = deckID;
     }
 
     public void setTerm(String term) {
@@ -39,6 +44,10 @@ public class Card{
         return this.cardID;
     }
 
+    public int getDeckID() {
+        return this.deckID;
+    }
+
     public String getTerm() {
         return this.term;
     }
@@ -54,8 +63,8 @@ public class Card{
     @Override
     public String toString() {
         if (cardID == 0)
-            return String.format("[CARD] Term: %s, Definition %s, Favorite: %b", this.term, this.definition, this.favorite);
+            return String.format("[CARD] DeckID: %d, Term: %s, Definition %s, Favorite: %b", this.deckID, this.term, this.definition, this.favorite);
         else
-            return String.format("[CARD] ID: %d, Term: %s, Definition %s, Favorite: %b", this.cardID, this.term, this.definition, this.favorite);
+            return String.format("[CARD] ID: %d, DeckID: %d, Term: %s, Definition %s, Favorite: %b", this.cardID, this.deckID, this.term, this.definition, this.favorite);
     }
 }
