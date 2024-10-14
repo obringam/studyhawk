@@ -23,7 +23,6 @@ public class DeckController {
         // Add all decks from database
         ArrayList<Deck> decks = DatabaseHandler.getDecks();
         model.addObject("decks", decks);
-        model.addObject("deck1", decks.get(0));
 
 		return model;
 	}
