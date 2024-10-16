@@ -3,51 +3,6 @@
     margin: 0;
 }
 
-header .head-bar {
-    background-color: #C41230;
-    padding: 10px;
-    width: 100%;
-}
-
-header .head-bar .title{
-    text-align: left;
-    font-family: "Roboto", sans-serif;
-    color: #ffffff;
-    display: inline-block;
-    padding-right: 50px;
-}
-
-.dropdown-nav-bar {
-    display: inline-block;
-}
-
-.dropdown-nav-bar .label {
-    color: white;
-    font-family: "Roboto", sans-serif;
-}
-
-.arrow {
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-}
-
-.up {
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-}
-  
-.down {
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-}
-
-header .head-bar .login {
-    text-align: right;
-    margin-right: 1%;
-}
-
 .deck-label {
     text-align: center;
     margin-top: 10px;
