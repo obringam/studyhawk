@@ -3,13 +3,32 @@
     margin: 0;
 }
 
+header nav {
+    background-color: #b61e2e;
+}
+
+header .navbar-brand {
+    font-family: 'roboto';
+    font-style: italic;
+    color: white;
+    font-size: 50px;
+}
+
+header .navbar-brand:hover {
+    color: white;
+}
+
+header .navbar-brand:visited {
+    text-decoration: none;
+    color: white;
+}
+
 .deck-label {
     text-align: center;
     margin-top: 10px;
 }
 
 .decks {
-    border: solid 5px black;
     background-color: lightgray;
     padding: 0;
     margin: auto;
@@ -19,7 +38,6 @@
 }
 
 .decks:hover {
-    border: solid 5px black;
     background-color: gray;
     padding: 0;
     margin: auto;
@@ -29,7 +47,7 @@
 }
 
 .decks hr {
-    border: solid 1px black;
+    border: solid 1px #808080;
 }
 
 .add-button {
@@ -68,4 +86,11 @@
     padding: 5px;
     margin-top: 10px;
     /*visibility: hidden;*/
+}
+
+footer .footer-content{
+    background-color: #b61e2e;
+    color: white;
+    margin: 0;
+    padding: 0;
 }
