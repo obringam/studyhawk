@@ -1,8 +1,11 @@
 package org.studyhawk.Controllers;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.servlet.ModelAndView;
@@ -15,36 +18,41 @@ import java.util.ArrayList;
 @RestController
 public class DeckController {
 
+    // Page to view decks
     @GetMapping("/decks")
 	public ModelAndView getDecksPage() {
-        ModelAndView model = new ModelAndView();
-        model.setViewName("decks");
-
-        // Add all decks from database
-        ArrayList<Deck> decks = DatabaseHandler.getDecks();
-        model.addObject("decks", decks);
-
-		return model;
+		return new ModelAndView("decks");
 	}
 
-    @GetMapping("/decks/add")
-    public ModelAndView addDeck(@RequestParam(required = true, name = "title") String title, @RequestParam(required = true, name = "description") String description) {
-        Deck deck = new Deck(title, description);
-        DatabaseHandler.insertDeck(deck);
-        return new ModelAndView("redirect:/decks");
+    // Retrieves all decks
+    @GetMapping("/decks/get")
+    public ResponseEntity<?> getDecks() {
+        ArrayList<Deck> decks = DatabaseHandler.getDecks();
+        return ResponseEntity.ok(decks);
     }
 
-    @GetMapping("/decks/remove")
-    public ModelAndView removeDeck(@RequestParam(required = true, name = "deck") String deckID) {
-        try {
-            int ID = Integer.parseInt(deckID);
-            Deck targetDeck = DatabaseHandler.getDeckByID(ID);
-            DatabaseHandler.removeDeck(targetDeck);
-        } catch (NumberFormatException e) {
-            System.out.println("[CONTROLLER] INVALID DECK ID");
-            return new ModelAndView("redirect:/decks");
+    // Adds a deck
+    @PostMapping("/decks/add")
+    public ResponseEntity<?> addDeck(@RequestBody Deck deck, Errors errors) {
+        //If error, just return a 400 bad request, along with the error message
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors);
         }
-        return new ModelAndView("redirect:/decks");
+
+        DatabaseHandler.insertDeck(deck);
+        return ResponseEntity.ok(deck);
+    }
+
+    // Removes a deck
+    @PostMapping("/decks/remove")
+    public ResponseEntity<?> removeDeck(@RequestBody Deck deck, Errors errors) {
+        //If error, just return a 400 bad request, along with the error message
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        DatabaseHandler.removeDeck(deck);
+        return ResponseEntity.ok(deck);
     }
 
 }
