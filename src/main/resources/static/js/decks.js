@@ -37,19 +37,28 @@ function loadDecks() {
                 // Build deck element
                 const deckDiv = document.createElement("div");
                 deckDiv.classList.add("decks");
+                deckDiv.id = "deck-" + deck["deckID"];
+
                 const titleDiv = document.createElement("div");
                 titleDiv.classList.add("title");
                 const titleHeader = document.createElement("h3");
                 const title = document.createTextNode(deck["title"]);
                 const hr = document.createElement("hr");
+
                 const descriptionDiv = document.createElement("div");
                 descriptionDiv.classList.add("description");
                 const descriptionPara = document.createElement("p");
                 const description = document.createTextNode(deck["description"]);
                 const deleteButton = document.createElement("Button");
-                deleteButton.id = "deck-" + deck["deckID"];
-                deleteButton.onclick = function() {request_delete_deck(deleteButton.id)};
+                deleteButton.onclick = function() {request_delete_deck(deleteButton, deckDiv.id)};
                 const deleteText = document.createTextNode("Delete");
+                const favoriteSpan = document.createElement("Span");
+                favoriteSpan.classList.add("fa");
+                favoriteSpan.classList.add("fa-star");
+                if (deck["favorite"]) {
+                    favoriteSpan.classList.add("checked");
+                }
+                favoriteSpan.onclick = function() {toggle_favorite(favoriteSpan, deckDiv.id)};
 
 
                 // Combine elements
@@ -59,6 +68,7 @@ function loadDecks() {
                 descriptionPara.appendChild(description);
                 descriptionDiv.appendChild(descriptionPara);
                 descriptionDiv.appendChild(deleteButton);
+                descriptionDiv.appendChild(favoriteSpan);
                 deckDiv.appendChild(titleDiv);
                 deckDiv.appendChild(hr);
                 deckDiv.appendChild(descriptionDiv);
@@ -102,12 +112,12 @@ function request_add_deck() {
 }
 
 // Sends an ajax request to delete a deck
-function request_delete_deck(id) {
+function request_delete_deck(element, id) {
 
     var requestData = {}
     requestData["deckID"] = id.substring(5); // Remove prefix from deckID
 
-    $("#" + id).prop("disabled", true);
+    element.disabled = true;
 
     $.ajax({
         type: "POST",
@@ -123,8 +133,43 @@ function request_delete_deck(id) {
         },
         error: function (e) {
             console.log("ERROR : ", e);
+            element.disabled = false;
         }
     });
+}
+
+// Sends an ajax request to toggle favorite on a deck
+function request_favorite_deck(id) {
+    var requestData = {}
+    requestData["deckID"] = id.substring(5); // Remove prefix from deckID
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "/decks/favorite",
+        data: JSON.stringify(requestData),
+        dataType: 'json',
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+            console.log("SUCCESS : ", data);
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+        }
+    });
+}
+
+// Toggle favorite on deck
+function toggle_favorite(element, id) {
+
+    if (element.classList.contains("checked")) {
+        element.classList.remove("checked");
+    } else {
+        element.classList.add("checked");
+    }
+
+    request_favorite_deck(id);
 }
 
 // Visibility checker

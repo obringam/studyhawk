@@ -346,7 +346,7 @@ public class DatabaseHandler {
 
     /**
      * Removes any cards within a given deck
-     * @param card The card to remove
+     * @param deck The deck to remove cards from
      * @param connection The connection passed to the method. This indicates this
      * method should only be used within the DatabaseHandler
      */
@@ -370,6 +370,39 @@ public class DatabaseHandler {
             System.out.println(queryFailed.getMessage());
         }
 
+        return false;
+
+    }
+
+    /**
+     * Toggles favorite for a deck
+     * @param deck The deck to toggle favorite for
+     * @param connection The connection passed to the method. This indicates this
+     * method should only be used within the DatabaseHandler
+     */
+    public static boolean toggleFavoriteDeck(Deck deck) {
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        try {
+            String removeSQL = "UPDATE studyhawk.Decks SET favorite = 1 - favorite WHERE deckID = (?)";
+            PreparedStatement statement = conn.prepareStatement(removeSQL);
+
+            statement.setInt(1, deck.getDeckID());
+
+            int rowUpdated = statement.executeUpdate();
+
+            if (rowUpdated > 0) {
+                System.out.printf("[DATABASE] Toggle favorite for deck: %s%n", deck);
+                return true;
+            }
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] TOGGLING FAVORITE FOR DECKS FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
         return false;
 
     }

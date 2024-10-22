@@ -3,13 +3,11 @@ package org.studyhawk.Controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.studyhawk.DatabaseHandler;
 import org.studyhawk.Components.Deck;
 
@@ -52,6 +50,18 @@ public class DeckController {
         }
 
         DatabaseHandler.removeDeck(deck);
+        return ResponseEntity.ok(deck);
+    }
+
+    // Favorites a deck
+    @PostMapping("/decks/favorite")
+    public ResponseEntity<?> favoriteDeck(@RequestBody Deck deck, Errors errors) {
+        //If error, just return a 400 bad request, along with the error message
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        DatabaseHandler.toggleFavoriteDeck(deck);
         return ResponseEntity.ok(deck);
     }
 
