@@ -79,7 +79,7 @@ function request_add_deck() {
     requestData["title"] = $("#title").val();
     requestData["description"] = $("#description").val();
 
-    $("#submit").prop("disabled", true);
+    $("#submitbtn").prop("disabled", true);
 
     $.ajax({
         type: "POST",
@@ -92,11 +92,11 @@ function request_add_deck() {
         success: function (data) {
             console.log("SUCCESS : ", data);
             loadDecks();
-            $("#submit").prop("disabled", false);
+            $("#submitbtn").prop("disabled", false);
         },
         error: function (e) {
             console.log("ERROR : ", e);
-            $("#submit").prop("disabled", false);
+            $("#submitbtn").prop("disabled", false);
         }
     });
 }
@@ -125,4 +125,51 @@ function request_delete_deck(id) {
             console.log("ERROR : ", e);
         }
     });
+}
+
+// Visibility checker
+var isVisible = true;
+
+function hide_form() {
+    // Checks to see if element is visible
+    if (isVisible) {
+        // Sets visibility checker to false
+        isVisible = false;
+        // Grabs div element
+        var element = document.getElementById("add-deck-form");
+        // Actually sets its visibility to hidden
+        element.style.visibility = "hidden";
+    }
+}
+
+function show_form() {
+    // Checks to see if element is not visible
+    if (!isVisible) {
+        // Save the form in a variable
+        var form = document.getElementById("add-form");
+        // Reset all of the fields
+        form.reset();
+        // Sets form visibility checker to true
+        isVisible = true;
+        // Grabs div element
+        var element = document.getElementById("add-deck-form");
+        // Actually sets its visibility to visible
+        element.style.visibility = "visible";
+    }
+}
+
+function validateAndSubmit(event) {
+    event.preventDefault(); // Prevent form submission for validation check
+    var form = document.getElementById("add-form");
+
+    // Check if form is valid
+    if (form.checkValidity()) {
+        // Hide the form if validation passes
+        hide_form();
+        // Optionally, submit the form if you want to proceed with the action
+        form.submit();
+    } else {
+        // If validation fails, let the browser show the default validation messages
+        form.reportValidity();
+    }
 }
