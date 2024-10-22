@@ -89,7 +89,17 @@ header .navbar-brand:visited {
     font-family: sans-serif;
     padding: 5px;
     margin-top: 10px;
-    /*visibility: hidden;*/
+    max-height: 0; /* Collapsed initially */
+    overflow: hidden; /* Hide content when collapsed */
+    transition: max-height 0.3s ease-out; /* Smooth slide transition */
+}
+
+.decks.open .description {
+    max-height: 100px; /* Or adjust to match the height of your content */
+}
+
+div #add-deck-form {
+    visibility: hidden;
 }
 
 footer .footer-content{

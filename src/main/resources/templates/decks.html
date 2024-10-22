@@ -30,13 +30,13 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#home">Home</a>
+                                <a class="nav-link active text-light" aria-current="page" href="#home">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#link">Link</a>
+                                <a class="nav-link text-light" href="#link">Link</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Dropdown
                                 </a>
                                 <ul class="dropdown-menu">
@@ -64,7 +64,7 @@
             other user info will appear.-->
         <div class="main-page">
             <div class="add-button">
-                <button onclick="duplicate()"><b>+ Add Deck</b></button>
+                <button onclick="show_form()"><b>+ Add Deck</b></button>
             </div>
             <div class="deck-label">
                 <h2>Your Decks</h2>
@@ -73,6 +73,7 @@
             <div>
                 <p id="empty-list"></p>
             </div>
+            <!--Deck object-->
             <div id="deck-list">
                 <div class="decks" id="decks">
                     <div class="title">
@@ -84,23 +85,75 @@
                     </div>
                     <button id="deck-37" onclick="request_delete_deck(this.id)">Delete</button>
                 </div>
+            </div>            
+            <div id="add-deck-form">
+                <form id="add-form">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" placeholder="Title your deck" pattern="[a-zA-Z0-9 ]+" required>
+                    <br>
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" placeholder="What is your deck about?" pattern="[a-zA-Z0-9 ]+" required>
+                    <br>
+                    <!--onclick="validateAndSubmit(event)"  *ADD*-->
+                    <input type="submit" id="submitbtn" value="Create Deck">
+                </form>
             </div>
-            <form id="add-form">
-                <label for="title">Title</label>
-                <input required type="text" id="title" name="title" value="Title your deck"/>
-                <br>
-                <label for="description">Description</label>
-                <input type="text" id="description" name="description" value="What is your deck about?"/>
-                <br>
-                <input type="submit" id="submit" value="Create Deck">
-            </form>
         </div>
         <footer>
-            <div class="footer-content">
-                <p class="footer"><b>Authors:</b> Austin Obringer, Jodi Lance, Tyler Magoteaux, Molly Teets | <b>Contact:</b> <a href="https://mail.google.com/mail/u/1/?view=cm&fs=1&to=obringam@miamioh.edu&tf=1">obringam@miamioh.edu</a> lancejh@miamioh.edu magotetp@miamioh.edu teetsmr@miamioh.edu</p>
-            </div>
+            <section class="">
+                <!-- Footer -->
+                <footer class="bg-body-tertiary text-center text-md-start">
+                  <!-- Grid container -->
+                  <div class="container p-4">
+                    <!--Grid row-->
+                    <div class="row">
+                      <!--Grid column-->
+                      <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                        <h5 class="text-uppercase">Footer Content</h5>
+              
+                        <p>
+                          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste atque ea quis
+                          molestias. Fugiat pariatur maxime quis culpa corporis vitae repudiandae
+                          aliquam voluptatem veniam, est atque cumque eum delectus sint!
+                        </p>
+                      </div>
+                      <!--Grid column-->
+              
+                      <!--Grid column-->
+                      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                        <h5 class="text-uppercase">Links</h5>
+              
+                        <ul class="list-unstyled mb-0">
+                          <li>
+                            <a href="#!" class="text-body">Link 1</a>
+                          </li>
+                          <li>
+                            <a href="#!" class="text-body">Link 2</a>
+                          </li>
+                          <li>
+                            <a href="#!" class="text-body">Link 3</a>
+                          </li>
+                          <li>
+                            <a href="#!" class="text-body">Link 4</a>
+                          </li>
+                        </ul>
+                      </div>
+                      <!--Grid column-->
+                    </div>
+                    <!--Grid row-->
+                  </div>
+                  <!-- Grid container -->
+              
+                  <!-- Copyright -->
+                  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+                    © 2020 Copyright:
+                    <a class="text-body" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+                  </div>
+                  <!-- Copyright -->
+                </footer>
+                <!-- Footer -->
+              </section>
         </footer>
-
         <script type="text/javascript" src="js/decks.js"></script>
     </body>
 </html>
