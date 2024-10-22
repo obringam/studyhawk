@@ -35,6 +35,10 @@ header .navbar-brand:visited {
     margin-top: 10px;
     width: 65%;
     border-radius: 25px;
+    /* -webkit-border-radius:;
+    -moz-border-radius:;
+    -ms-border-radius:;
+    -o-border-radius:; */
 }
 
 .decks:hover {

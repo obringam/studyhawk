@@ -15,7 +15,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Guides:wght@400..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     </head>
-    <body>
+    <body onload="loadPage()">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <!--This contains the top banner on the page.
             Within this banner, there are nav-links,
@@ -73,26 +73,21 @@
             <div>
                 <p id="empty-list"></p>
             </div>
-            <th:block th:each="deck : ${decks}">
+            <div id="deck-list">
                 <div class="decks" id="decks">
                     <div class="title">
-                        <h3>Title</h3>
-                        <p th:text="${deck.title}"></p>
+                        <h3>Sample</h3>
                     </div>
                     <hr>
                     <div class="description">
-                        <h3>Description</h3>
-                        <p th:text="${deck.description}"></p>
+                        <h3>This is a sample deck</h3>
                     </div>
-                    <form action="/decks/remove" method="get">
-                        <button type="submit" onclick="return confirm('Are you sure you want to delete this deck?');">Delete</button>
-                        <input type="hidden" name="deck" th:value="${deck.deckID}" />
-                    </form>
+                    <button id="deck-37" onclick="request_delete_deck(this.id)">Delete</button>
                 </div>
-            </th:block>
-            <form action="/decks/add" method="get">
+            </div>
+            <form id="add-form">
                 <label for="title">Title</label>
-                <input type="text" id="title" name="title" value="Title your deck"/>
+                <input required type="text" id="title" name="title" value="Title your deck"/>
                 <br>
                 <label for="description">Description</label>
                 <input type="text" id="description" name="description" value="What is your deck about?"/>
@@ -105,5 +100,7 @@
                 <p class="footer"><b>Authors:</b> Austin Obringer, Jodi Lance, Tyler Magoteaux, Molly Teets | <b>Contact:</b> <a href="https://mail.google.com/mail/u/1/?view=cm&fs=1&to=obringam@miamioh.edu&tf=1">obringam@miamioh.edu</a> lancejh@miamioh.edu magotetp@miamioh.edu teetsmr@miamioh.edu</p>
             </div>
         </footer>
+
+        <script type="text/javascript" src="js/decks.js"></script>
     </body>
 </html>
