@@ -42,7 +42,7 @@ header .navbar-brand:visited {
 }
 
 .decks:hover {
-    background-color: gray;
+    background-color: rgb(188, 188, 188);
     padding: 0;
     margin: auto;
     margin-top: 10px;
@@ -89,7 +89,7 @@ header .navbar-brand:visited {
     font-family: sans-serif;
     padding: 5px;
     margin-top: 10px;
-    max-height: 0; /* Collapsed initially */
+    max-height: 300px; /* Collapsed initially */ /* Changed temporarily to work on decks */
     overflow: hidden; /* Hide content when collapsed */
     transition: max-height 0.3s ease-out; /* Smooth slide transition */
 }
@@ -107,4 +107,16 @@ footer .footer-content{
     color: white;
     margin: 0;
     padding: 0;
+}
+
+.fa-star {
+    scale: 2;
+}
+
+.fa-star:hover {
+    color: rgb(155, 132, 19);
+}
+
+.checked {
+    color: rgb(255,215,0) !important;
 }
