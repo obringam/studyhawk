@@ -48,6 +48,7 @@ function displayDecks() {
     }
 
     // For each deck returned, create an element and add to deck list
+    var deckCount = 0; // Count the number of decks created
     for(let i = 0; i < loadedDecksJSON.length; i++) {
         let deck = loadedDecksJSON[i];
 
@@ -104,6 +105,24 @@ function displayDecks() {
 
         // Add deck to deck list
         deckList.appendChild(deckDiv);
+        deckCount++;
+    }
+
+    if (deckCount == 0) {
+        const noDecksDiv = document.createElement("div");
+        noDecksDiv.classList.add("no-decks-div");
+        const noDecksPara = document.createElement("p");
+
+        var noDecksText = document.createTextNode("You have no decks! Press 'Add Deck' to create one!");
+        if (typeof searchText !== 'undefined') { // Undefined if no search has been entered yet
+            if (searchText.length > 0) { // 0 if the search text is nothing
+                noDecksText = document.createTextNode("We couldn't find any decks matching your search!");
+            }
+        }
+
+        noDecksPara.appendChild(noDecksText);
+        noDecksDiv.appendChild(noDecksPara);
+        deckList.appendChild(noDecksDiv);
     }
 }
 
