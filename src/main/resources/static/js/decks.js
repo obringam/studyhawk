@@ -38,6 +38,13 @@ function search(text) {
     displayDecks();
 }
 
+// Navigate to cards page for selected deck
+function view_deck(id) {
+    var extractedID = id.substring(5); // Remove prefix from deckID
+    var newURL = window.location.origin + "/cards/" + extractedID;
+    window.location.href = newURL; // Navigate to new URL
+}
+
 // Displays the decks. The decks are filtered if a search text is entered.
 function displayDecks() {
     const deckList = document.getElementById("deck-list");
@@ -79,6 +86,9 @@ function displayDecks() {
         descriptionDiv.classList.add("description");
         const descriptionPara = document.createElement("p");
         const description = document.createTextNode(deck["description"]);
+        const viewButton = document.createElement("Button");
+        viewButton.onclick = function() {view_deck(deckDiv.id)};
+        const viewText = document.createTextNode("Study");
         const deleteButton = document.createElement("Button");
         deleteButton.onclick = function() {request_delete_deck(deleteButton, deckDiv.id)};
         const deleteText = document.createTextNode("Delete");
@@ -92,11 +102,13 @@ function displayDecks() {
 
 
         // Combine elements
+        viewButton.appendChild(viewText);
         deleteButton.appendChild(deleteText);
         titleHeader.appendChild(title);
         titleDiv.appendChild(titleHeader);
         descriptionPara.appendChild(description);
         descriptionDiv.appendChild(descriptionPara);
+        descriptionDiv.appendChild(viewButton);
         descriptionDiv.appendChild(deleteButton);
         descriptionDiv.appendChild(favoriteSpan);
         deckDiv.appendChild(titleDiv);
