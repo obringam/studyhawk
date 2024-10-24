@@ -53,9 +53,9 @@
                                 <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                             </li> -->
                         </ul>
-                        <form class="d-flex" role="search">
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success bg-primary" type="submit">Search</button>
+                        <form id="search-form" class="d-flex" role="search">
+                            <input id="search-input" class="form-control me-2" oninput="search(this.value)" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-light fa fa-search" type="submit"></button>
                         </form>
                     </div>
                 </div>
