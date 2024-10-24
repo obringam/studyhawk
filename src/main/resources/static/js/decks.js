@@ -2,7 +2,15 @@ $(document).ready(function () {
 
     $("#add-form").submit(function (event) {
         event.preventDefault();
-        request_add_deck();
+        if (this.checkValidity()) {
+            // Hide the form if validation passes
+            hide_form();
+            request_add_deck();
+        } else {
+            // If validation fails, let the browser show the default validation messages
+            this.reportValidity();
+        }
+        
     });
 
 });
@@ -173,7 +181,7 @@ function toggle_favorite(element, id) {
 }
 
 // Visibility checker
-var isVisible = true;
+var isVisible = false;
 
 function hide_form() {
     // Checks to see if element is visible
@@ -181,7 +189,7 @@ function hide_form() {
         // Sets visibility checker to false
         isVisible = false;
         // Grabs div element
-        var element = document.getElementById("add-deck-form");
+        var element = document.getElementById("container");
         // Actually sets its visibility to hidden
         element.style.visibility = "hidden";
     }
@@ -190,31 +198,12 @@ function hide_form() {
 function show_form() {
     // Checks to see if element is not visible
     if (!isVisible) {
-        // Save the form in a variable
-        var form = document.getElementById("add-form");
         // Reset all of the fields
-        form.reset();
+        document.getElementById("add-form").reset();
         // Sets form visibility checker to true
         isVisible = true;
-        // Grabs div element
-        var element = document.getElementById("add-deck-form");
         // Actually sets its visibility to visible
-        element.style.visibility = "visible";
+        document.getElementById("container").style.visibility = "visible";
     }
-}
-
-function validateAndSubmit(event) {
-    event.preventDefault(); // Prevent form submission for validation check
-    var form = document.getElementById("add-form");
-
-    // Check if form is valid
-    if (form.checkValidity()) {
-        // Hide the form if validation passes
-        hide_form();
-        // Optionally, submit the form if you want to proceed with the action
-        form.submit();
-    } else {
-        // If validation fails, let the browser show the default validation messages
-        form.reportValidity();
-    }
+    console.log("success");
 }
