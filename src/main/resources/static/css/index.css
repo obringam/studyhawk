@@ -33,6 +33,7 @@ header .navbar-brand:visited {
     padding: 0;
     margin: auto;
     margin-top: 10px;
+    margin-bottom: 10px;
     width: 65%;
     border-radius: 25px;
     /* -webkit-border-radius:;
@@ -43,11 +44,6 @@ header .navbar-brand:visited {
 
 .decks:hover {
     background-color: rgb(188, 188, 188);
-    padding: 0;
-    margin: auto;
-    margin-top: 10px;
-    width: 65%;
-    border-radius: 25px;
 }
 
 .decks hr {
@@ -106,6 +102,10 @@ header .navbar-brand:visited {
     margin-right: 10px;
     border-radius: 25px;
     float: right;
+}
+
+.decks .deckbtn:hover {
+    background-color: rgb(177, 177, 177);
 }
 
 .decks .favoritespan {
