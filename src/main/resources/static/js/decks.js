@@ -86,15 +86,21 @@ function displayDecks() {
         descriptionDiv.classList.add("description");
         const descriptionPara = document.createElement("p");
         const description = document.createTextNode(deck["description"]);
-        const viewButton = document.createElement("Button");
-        viewButton.onclick = function() {view_deck(deckDiv.id)};
+        const studyButton = document.createElement("Button");
+        studyButton.classList.add("studybtn");
+        studyButton.classList.add("deckbtn");
+        studyButton.onclick = function() {view_deck(deckDiv.id)};
         const viewText = document.createTextNode("Study");
         const deleteButton = document.createElement("Button");
+        deleteButton.classList.add("deletebtn");
+        deleteButton.classList.add("deckbtn");
         deleteButton.onclick = function() {request_delete_deck(deleteButton, deckDiv.id)};
         const deleteText = document.createTextNode("Delete");
         const favoriteSpan = document.createElement("Span");
         favoriteSpan.classList.add("fa");
         favoriteSpan.classList.add("fa-star");
+        favoriteSpan.classList.add("favoritespan")
+        // favoriteSpan.classList.add("deckbtn");
         if (deck["favorite"]) {
             favoriteSpan.classList.add("checked");
         }
@@ -102,13 +108,13 @@ function displayDecks() {
 
 
         // Combine elements
-        viewButton.appendChild(viewText);
+        studyButton.appendChild(viewText);
         deleteButton.appendChild(deleteText);
         titleHeader.appendChild(title);
         titleDiv.appendChild(titleHeader);
         descriptionPara.appendChild(description);
         descriptionDiv.appendChild(descriptionPara);
-        descriptionDiv.appendChild(viewButton);
+        descriptionDiv.appendChild(studyButton);
         descriptionDiv.appendChild(deleteButton);
         descriptionDiv.appendChild(favoriteSpan);
         deckDiv.appendChild(titleDiv);

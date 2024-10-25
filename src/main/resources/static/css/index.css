@@ -98,6 +98,39 @@ header .navbar-brand:visited {
     max-height: 100px; /* Or adjust to match the height of your content */
 }
 
+.decks .deckbtn {
+    background-color: lightgray;
+    color: black;
+    border-style: 1px solid black;
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 25px;
+    float: right;
+}
+
+.decks .favoritespan {
+    margin-left: 5px;
+    float: right;
+    padding: 0;
+    margin: 0;
+    margin-right: 15px;
+    margin-top: 17px;
+    scale: 2;
+}
+
+.decks .favoritespan:hover {
+    color: rgb(155, 132, 19);
+}
+
+.checked {
+    color: rgb(255,215,0) !important;
+}
+
+.no-decks-div {
+    padding: 10;
+    text-align: center;
+}
+
 #container {
     width: 400px;
     height: 300px;
@@ -160,21 +193,4 @@ footer .footer-content{
     color: white;
     margin: 0;
     padding: 0;
-}
-
-.fa-star {
-    scale: 2;
-}
-
-.fa-star:hover {
-    color: rgb(155, 132, 19);
-}
-
-.checked {
-    color: rgb(255,215,0) !important;
-}
-
-.no-decks-div {
-    padding: 10;
-    text-align: center;
 }
