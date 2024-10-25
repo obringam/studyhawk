@@ -173,3 +173,8 @@ footer .footer-content{
 .checked {
     color: rgb(255,215,0) !important;
 }
+
+.no-decks-div {
+    padding: 10;
+    text-align: center;
+}

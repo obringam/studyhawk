@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Study Hawk</title>
+        <title>Study Hawk | Decks</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!--Miami Red-->
         <!--Hex Color: #b61e2e;-->
@@ -53,9 +53,9 @@
                                 <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                             </li> -->
                         </ul>
-                        <form class="d-flex" role="search">
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success bg-primary" type="submit">Search</button>
+                        <form id="search-form" class="d-flex" role="search">
+                            <input id="search-input" class="form-control me-2" oninput="search(this.value)" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-light fa fa-search" type="submit"></button>
                         </form>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
             </div>
             <!--Deck object-->
             <div id="deck-list">
-                <div class="decks" id="deck-37">
+                <!-- <div class="decks" id="deck-37">
                     <div class="title">
                         <h3>Sample</h3>
                     </div>
@@ -88,7 +88,7 @@
                         <button onclick="request_delete_deck(this, this.parentElement.id)">Delete</button>
                         <span class="fa fa-star" onclick="toggle_favorite(this, this.parentElement.id)"></span>
                     </div>
-                </div>
+                </div> -->
             </div>
             <!--Deck object-->
             <div id="container">
