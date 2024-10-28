@@ -213,6 +213,56 @@ public class DatabaseHandler {
     }
 
     /**
+     * Gets all cards from the database from a certain deck.
+     * @param deckID The ID of the deck to get the cards from
+     * @return ArrayList of Cards from the deck
+     */
+    public static ArrayList<Card> getCardsByDeckID(int deckID) {
+
+        ArrayList<Card> cards = new ArrayList<>();
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        // Get cards from database
+        try {
+
+            // Query card data from database
+            String querySQL = "SELECT * FROM studyhawk.Cards WHERE deckID = ?";
+            PreparedStatement statement = conn.prepareStatement(querySQL);
+
+            statement.setInt(1, deckID);
+
+            ResultSet result = statement.executeQuery();
+
+            // Place all card data in ArrayList
+            try {
+                while (result.next()) {
+                    Card card = new Card(
+                        result.getInt("deckID"),
+                        result.getString("term"),
+                        result.getString("definition"),
+                        result.getBoolean("favorite")
+                    );
+                    card.setCardID(result.getInt("cardID"));
+                    cards.add(card);
+                }
+
+            } catch (SQLException parsingFailed) {
+                System.out.println("[ERROR] CARDS PROCESSING FAILED");
+                System.out.println(parsingFailed.getMessage());
+            }
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] CARDS QUERY FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+        return cards;
+
+    }
+
+    /**
      * Inserts a deck into the database
      * @param deck
      */
