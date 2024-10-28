@@ -3,12 +3,14 @@ package org.studyhawk.Controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.studyhawk.DatabaseHandler;
+import org.studyhawk.Components.Card;
 import org.studyhawk.Components.Deck;
 
 import java.util.ArrayList;
@@ -27,6 +29,18 @@ public class DeckController {
     public ResponseEntity<?> getDecks() {
         ArrayList<Deck> decks = DatabaseHandler.getDecks();
         return ResponseEntity.ok(decks);
+    }
+
+    // Retrieves a deck by its ID
+    @GetMapping("/decks/get/{deckID}")
+    public ResponseEntity<?> getCards(@PathVariable("deckID") String deckID) {
+        Deck deck;
+        try {
+            deck = DatabaseHandler.getDeckByID(Integer.parseInt(deckID));
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid deckID");
+        }
+        return ResponseEntity.ok(deck);
     }
 
     // Adds a deck

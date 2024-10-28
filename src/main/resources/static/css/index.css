@@ -3,8 +3,13 @@
     margin: 0;
 }
 
+html, body {
+    height: 100%;
+}
+
 header nav {
     background-color: #b61e2e;
+    height: 75px;
 }
 
 header .navbar-brand {
@@ -23,6 +28,14 @@ header .navbar-brand:visited {
     color: white;
 }
 
+.main-page {
+    height: auto;
+    width: 100%;
+    position: absolute;
+    top: 75px;
+    bottom: 0;
+}
+
 .deck-label {
     text-align: center;
     margin-top: 10px;
@@ -36,10 +49,12 @@ header .navbar-brand:visited {
     margin-bottom: 10px;
     width: 65%;
     border-radius: 25px;
-    /* -webkit-border-radius:;
-    -moz-border-radius:;
-    -ms-border-radius:;
-    -o-border-radius:; */
+    /*-webkit-border-radius:;
+    -moz-border-radius: 25px;
+    -ms-border-radius: 25px;
+    -o-border-radius: 25px;
+     */
+    -webkit-border-radius: 25px;
 }
 
 .decks:hover {
@@ -193,4 +208,66 @@ footer .footer-content{
     color: white;
     margin: 0;
     padding: 0;
+}
+
+/* Cards */
+
+.study-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: auto;
+    align-items: center; /* Centers elements vertically */
+    justify-content: center; /* Centers elements horizontally (optional) */
+}
+
+.card-container {
+    width: 50%;
+    aspect-ratio: 16 / 9; /* Sets the aspect ratio to always be 16:9 (adjusts height) */
+}
+
+.card-style {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: lightgray;
+    font-family: sans-serif;
+    font-size: 50px;
+    border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    -ms-border-radius: 15px;
+    -o-border-radius: 15px;
+    transition: background-color 0.05s ease-in;
+    -webkit-transition: background-color 0.05s ease-in;
+    -moz-transition: background-color 0.05s ease-in;
+    -ms-transition: background-color 0.05s ease-in;
+    -o-transition: background-color 0.05s ease-in;
+}
+
+.card-style:hover {
+    background-color: rgb(186, 186, 186);
+}
+
+.card-button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.card-button {
+    background-color: transparent;
+    border-color: transparent;
+    border-width: 0;
+    color:#b61e2e;
+    transition: color 0.05s ease-in;
+    -webkit-transition: color 0.05s ease-in;
+    -moz-transition: color 0.05s ease-in;
+    -ms-transition: color 0.05s ease-in;
+    -o-transition: color 0.05s ease-in;
+}
+
+.card-button:hover {
+    color:#941724;
 }
