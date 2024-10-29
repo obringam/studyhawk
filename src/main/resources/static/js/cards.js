@@ -16,20 +16,25 @@ function getDeckID() {
     return id;
 }
 
+// Moves back a card
 function prevCard() {
     if (cardIndex > 0) {
         cardIndex--;
+        flipped = false;
         displayCard();
     }
 }
 
+// Moves forward a card
 function nextCard() {
     if (cardIndex < loadedCardsJSON.length - 1) {
         cardIndex++;
+        flipped = false;
         displayCard();
     }
 }
 
+// Flips the card between term and definition
 function flipCard() {
     flipped = !flipped;
     displayCard();
@@ -44,34 +49,54 @@ function displayDeckInfo() {
 // Display the current card to the screen
 function displayCard() {
     const cardContainer = document.getElementById("card-container");
+    const cardButtonContainer = document.getElementById("card-button-container");
 
     // Clear cards from card container
     while (cardContainer.firstChild) {
         cardContainer.removeChild(cardContainer.lastChild);
     }
 
-    // If there are no cards in the deck
-    if (loadedCardsJSON.length == 0) {
-        console.log("No cards in the deck");
-        return;
-    }
-
-    // Create card object and display
-    let card = loadedCardsJSON[cardIndex];
-
     const cardDiv = document.createElement("div");
     cardDiv.classList.add("card-style");
-    cardDiv.id = "card-" + card["cardID"];
-    cardDiv.onclick = function () {flipCard()};
 
-    if (flipped) {
-        // Definition is shown
-        const definition = document.createTextNode(card["definition"]);
-        cardDiv.appendChild(definition);
+    // If there are no cards in the deck
+    if (loadedCardsJSON.length == 0) {
+
+        // Display message
+        const message = document.createTextNode("There are no cards in this deck...");
+        cardDiv.appendChild(message);
+        cardDiv.classList.add("definition");
+
+        // Remove buttons
+        cardButtonContainer.style.display = "none";
+
     } else {
-        // Term is shown
-        const term = document.createTextNode(card["term"]);
-        cardDiv.appendChild(term);
+
+        // Create card object and display
+        let card = loadedCardsJSON[cardIndex];
+
+        cardDiv.id = "card-" + card["cardID"];
+        cardDiv.onclick = function () {flipCard()};
+
+        if (flipped) {
+            // Definition is shown
+            const definition = document.createTextNode(card["definition"]);
+            cardDiv.appendChild(definition);
+            cardDiv.classList.add("definition");
+        } else {
+            // Term is shown
+            const term = document.createTextNode(card["term"]);
+            cardDiv.appendChild(term);
+            cardDiv.classList.add("term");
+        }
+
+        // Update card position label
+        const cardPos = document.getElementById("card-position");
+        cardPos.textContent = (cardIndex + 1) + " / " + loadedCardsJSON.length;
+
+        // Show buttons
+        cardButtonContainer.style.display = "flex";
+
     }
 
     // Add card to container

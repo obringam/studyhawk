@@ -54,76 +54,22 @@ function displayDecks() {
         deckList.removeChild(deckList.lastChild);
     }
 
-    // For each deck returned, create an element and add to deck list
     var deckCount = 0; // Count the number of decks created
+
+    // For each deck returned, create an element and add to deck list (if favorite)
     for(let i = 0; i < loadedDecksJSON.length; i++) {
         let deck = loadedDecksJSON[i];
 
-        // If search text is not empty, check if deck title or description
-        // contains the text. If it doesn't, skip this deck.
-        if (typeof searchText !== 'undefined') { // Undefined if no search has been entered yet
-            if (searchText.length > 0) { // 0 if the search text is nothing
-                // If search text isn't in the title or description
-                if (!deck["title"].toLowerCase().includes(searchText)
-                    && !deck["description"].toLowerCase().includes(searchText)) {
-                    continue;
-                }
-            }
-        }
+        if (deck["favorite"])
+            deckCount += buildDeck(deck, deckList);;
+    }
 
-        // Build deck element
-        const deckDiv = document.createElement("div");
-        deckDiv.classList.add("decks");
-        deckDiv.id = "deck-" + deck["deckID"];
+    // For each deck returned, create an element and add to deck list (if not favorite)
+    for(let i = 0; i < loadedDecksJSON.length; i++) {
+        let deck = loadedDecksJSON[i];
 
-        const titleDiv = document.createElement("div");
-        titleDiv.classList.add("title");
-        const titleHeader = document.createElement("h3");
-        const title = document.createTextNode(deck["title"]);
-        const hr = document.createElement("hr");
-
-        const descriptionDiv = document.createElement("div");
-        descriptionDiv.classList.add("description");
-        const descriptionPara = document.createElement("p");
-        const description = document.createTextNode(deck["description"]);
-        const studyButton = document.createElement("Button");
-        studyButton.classList.add("studybtn");
-        studyButton.classList.add("deckbtn");
-        studyButton.onclick = function() {view_deck(deckDiv.id)};
-        const viewText = document.createTextNode("Study");
-        const deleteButton = document.createElement("Button");
-        deleteButton.classList.add("deletebtn");
-        deleteButton.classList.add("deckbtn");
-        deleteButton.onclick = function() {request_delete_deck(deleteButton, deckDiv.id)};
-        const deleteText = document.createTextNode("Delete");
-        const favoriteSpan = document.createElement("Span");
-        favoriteSpan.classList.add("fa");
-        favoriteSpan.classList.add("fa-star");
-        favoriteSpan.classList.add("favoritespan")
-        // favoriteSpan.classList.add("deckbtn");
-        if (deck["favorite"]) {
-            favoriteSpan.classList.add("checked");
-        }
-        favoriteSpan.onclick = function() {toggle_favorite(favoriteSpan, deckDiv.id)};
-
-
-        // Combine elements
-        studyButton.appendChild(viewText);
-        deleteButton.appendChild(deleteText);
-        titleHeader.appendChild(title);
-        titleDiv.appendChild(titleHeader);
-        descriptionPara.appendChild(description);
-        descriptionDiv.appendChild(descriptionPara);
-        descriptionDiv.appendChild(studyButton);
-        descriptionDiv.appendChild(deleteButton);
-        descriptionDiv.appendChild(favoriteSpan);
-        deckDiv.appendChild(titleDiv);
-        deckDiv.appendChild(hr);
-        deckDiv.appendChild(descriptionDiv);
-
-        // Add deck to deck list
-        deckList.appendChild(deckDiv);
-        deckCount++;
+        if (!deck["favorite"])
+            deckCount += buildDeck(deck, deckList);;
     }
 
     if (deckCount == 0) {
@@ -142,6 +88,74 @@ function displayDecks() {
         noDecksDiv.appendChild(noDecksPara);
         deckList.appendChild(noDecksDiv);
     }
+}
+
+function buildDeck(deck, deckList) {
+    // If search text is not empty, check if deck title or description
+    // contains the text. If it doesn't, skip this deck.
+    if (typeof searchText !== 'undefined') { // Undefined if no search has been entered yet
+        if (searchText.length > 0) { // 0 if the search text is nothing
+            // If search text isn't in the title or description
+            if (!deck["title"].toLowerCase().includes(searchText)
+                && !deck["description"].toLowerCase().includes(searchText)) {
+                return 0;
+            }
+        }
+    }
+
+    // Build deck element
+    const deckDiv = document.createElement("div");
+    deckDiv.classList.add("decks");
+    deckDiv.id = "deck-" + deck["deckID"];
+
+    const titleDiv = document.createElement("div");
+    titleDiv.classList.add("title");
+    const titleHeader = document.createElement("h3");
+    const title = document.createTextNode(deck["title"]);
+    const hr = document.createElement("hr");
+
+    const descriptionDiv = document.createElement("div");
+    descriptionDiv.classList.add("description");
+    const descriptionPara = document.createElement("p");
+    const description = document.createTextNode(deck["description"]);
+    const studyButton = document.createElement("Button");
+    studyButton.classList.add("studybtn");
+    studyButton.classList.add("deckbtn");
+    studyButton.onclick = function() {view_deck(deckDiv.id)};
+    const viewText = document.createTextNode("Study");
+    const deleteButton = document.createElement("Button");
+    deleteButton.classList.add("deletebtn");
+    deleteButton.classList.add("deckbtn");
+    deleteButton.onclick = function() {request_delete_deck(deleteButton, deckDiv.id)};
+    const deleteText = document.createTextNode("Delete");
+    const favoriteSpan = document.createElement("Span");
+    favoriteSpan.classList.add("fa");
+    favoriteSpan.classList.add("fa-star");
+    favoriteSpan.classList.add("favoritespan")
+    // favoriteSpan.classList.add("deckbtn");
+    if (deck["favorite"]) {
+        favoriteSpan.classList.add("checked");
+    }
+    favoriteSpan.onclick = function() {toggle_favorite(favoriteSpan, deckDiv.id)};
+
+
+    // Combine elements
+    studyButton.appendChild(viewText);
+    deleteButton.appendChild(deleteText);
+    titleHeader.appendChild(title);
+    titleDiv.appendChild(titleHeader);
+    descriptionPara.appendChild(description);
+    descriptionDiv.appendChild(descriptionPara);
+    descriptionDiv.appendChild(studyButton);
+    descriptionDiv.appendChild(deleteButton);
+    descriptionDiv.appendChild(favoriteSpan);
+    deckDiv.appendChild(titleDiv);
+    deckDiv.appendChild(hr);
+    deckDiv.appendChild(descriptionDiv);
+
+    // Add deck to deck list
+    deckList.appendChild(deckDiv);
+    return 1;
 }
 
 // Sends an ajax request to get decks
