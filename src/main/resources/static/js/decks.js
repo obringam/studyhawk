@@ -45,6 +45,13 @@ function view_deck(id) {
     window.location.href = newURL; // Navigate to new URL
 }
 
+// Navigate to edit page for a deck's cards
+function edit_deck(id) {
+    var extractedID = id.substring(5);
+    var newURL = window.location.origin + "/cards/edit/" + extractedID;
+    window.location.href = newURL; // Navigate to new URL
+}
+
 // Displays the decks. The decks are filtered if a search text is entered.
 function displayDecks() {
     const deckList = document.getElementById("deck-list");
@@ -118,6 +125,9 @@ function buildDeck(deck, deckList) {
     descriptionDiv.classList.add("description");
     const descriptionPara = document.createElement("p");
     const description = document.createTextNode(deck["description"]);
+    const editButton = document.createElement("Button");
+    const editText = document.createTextNode("Edit");
+    editButton.onclick = function() {edit_deck(deckDiv.id)};
     const studyButton = document.createElement("Button");
     studyButton.classList.add("studybtn");
     studyButton.classList.add("deckbtn");
@@ -146,6 +156,8 @@ function buildDeck(deck, deckList) {
     titleDiv.appendChild(titleHeader);
     descriptionPara.appendChild(description);
     descriptionDiv.appendChild(descriptionPara);
+    descriptionDiv.appendChild(editButton);
+    editButton.appendChild(editText);
     descriptionDiv.appendChild(studyButton);
     descriptionDiv.appendChild(deleteButton);
     descriptionDiv.appendChild(favoriteSpan);

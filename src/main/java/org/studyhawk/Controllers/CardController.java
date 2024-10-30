@@ -1,23 +1,28 @@
 package org.studyhawk.Controllers;
 
+import java.util.ArrayList;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
 import org.springframework.web.servlet.ModelAndView;
-import org.studyhawk.DatabaseHandler;
 import org.studyhawk.Components.Card;
-
-import java.util.ArrayList;
+import org.studyhawk.DatabaseHandler;
 
 @RestController
 public class CardController {
 
-    // Page to view decks
+    // Page to study cards
     @GetMapping("/cards/{deckID}")
 	public ModelAndView getCardsPage(@PathVariable("deckID") String deckID) {
 		return new ModelAndView("cards");
+    }
+
+    // Page to edit cards
+    @GetMapping("/cards/edit/{deckID}")
+	public ModelAndView getCardsEditPage(@PathVariable("deckID") String deckID) {
+		return new ModelAndView("cardsEdit");
     }
 
     // Retrieves all cards from a deck
