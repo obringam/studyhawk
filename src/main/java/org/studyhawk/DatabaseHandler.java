@@ -263,6 +263,47 @@ public class DatabaseHandler {
     }
 
     /**
+     * Gets a user from the database with a certain username.
+     * @param username The username of the user
+     * @return The user object
+     */
+    public static UserAccount getUserByUsername(String username) {
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        // Get user from database
+        try {
+            String querySQL = "SELECT * FROM studyhawk.Users WHERE username = (?)";
+            PreparedStatement statement = conn.prepareStatement(querySQL);
+
+            statement.setString(1, username);
+
+            ResultSet result = statement.executeQuery();
+
+            UserAccount user = null;
+            if (result.next()) {
+                user = new UserAccount(
+                    result.getString("username"),
+                    result.getString("email"),
+                    result.getString("password")
+                );
+                user.setUserID(result.getInt("userID"));
+            }
+            DatabaseHandler.closeConnection(conn);
+            return user;
+
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] USER QUERY FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+        return null;
+
+    }
+
+    /**
      * Inserts a deck into the database
      * @param deck
      */
@@ -314,6 +355,35 @@ public class DatabaseHandler {
             statement.executeUpdate();
 
             System.out.printf("[DATABASE] Inserted into Cards table: %s%n", card);
+
+        } catch (SQLException insertFailed) {
+            System.out.println("[ERROR] TABLE INSERT FAILED");
+            System.out.println(insertFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+
+    }
+
+    /**
+     * Inserts a user into the database
+     * @param user The user to insert
+     */
+    public static void insertUser(UserAccount user) {
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        try {
+            String insertSQL = "INSERT INTO studyhawk.Users (username, email, password) VALUES(?,?,?)";
+            PreparedStatement statement = conn.prepareStatement(insertSQL);
+
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getEmail());
+            statement.setString(3, user.getPassword());
+
+            statement.executeUpdate();
+
+            System.out.printf("[DATABASE] Inserted into Users table: %s%n", user);
 
         } catch (SQLException insertFailed) {
             System.out.println("[ERROR] TABLE INSERT FAILED");

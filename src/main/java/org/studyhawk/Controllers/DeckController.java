@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.studyhawk.DatabaseHandler;
-import org.studyhawk.Components.Card;
 import org.studyhawk.Components.Deck;
 
 import java.util.ArrayList;
