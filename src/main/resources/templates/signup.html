@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Study Hawk | Sign Up</title>
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="css/loginStyle.css">
+        <script type="text/javascript" src="/js/signup.js"></script>
+        <link rel="icon" href="images/pawPatrol.ico" type="image/x-icon">
+        <!-- <meta th:name="_csrf" th:content="${_csrf.token}"/>
+        <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/> -->
+    </head>
+    <body>
+        <section>
+            <form id="signup-form">
+                <h1>Sign Up</h1>
+                <div class="inputbox">
+                    <input type="text" id= "username" name="username" required>
+                    <label for="">Username</label>
+                </div>
+                <div class="inputbox">
+                    <input type="email" id="email" name="email" required>
+                    <label for="">Email</label>
+                </div>
+                <div class="inputbox">
+                    <input type="password" id="password" name="password" required>
+                    <label for="">Password</label>
+                </div>
+                <div class="inputbox">
+                  <input type="password" id="passwordcon" name="passwordcon" required>
+                  <label for="">Confirm Password</label>
+              </div>
+                <button id= "submit" type="submit">Sign Up</button>
+              <div class="register">
+                <p>Already have an account? <a href="/login">Log In</a></p>
+              </div>
+            </form>
+          </section>
+    </body>
+</html>
