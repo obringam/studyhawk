@@ -23,6 +23,7 @@ $(document).ready(function () {
 });
 
 var loadedDecksJSON; // The loaded decks JSON at any given time
+var loadedSharedDecksJSON; // The loaded decks JSON at any given time
 var searchText; // The current search text entered and submitted at any given time
 
 // Runs on startup of page
@@ -61,28 +62,37 @@ function displayDecks() {
         deckList.removeChild(deckList.lastChild);
     }
 
-    var deckCount = 0; // Count the number of decks created
+    var ownedDeckCount = 0; // Count the number of decks created
+
+    /* YOUR DECKS */
+
+    // Add your decks header
+    const yourDeckHeader = document.createElement("h1");
+    yourDeckHeader.classList.add("deck-label");
+    const yourDeckText = document.createTextNode("Your Decks");
+    yourDeckHeader.appendChild(yourDeckText);
+    deckList.appendChild(yourDeckHeader);
 
     // For each deck returned, create an element and add to deck list (if favorite)
-    for(let i = 0; i < loadedDecksJSON.length; i++) {
+    for (let i = 0; i < loadedDecksJSON.length; i++) {
         let deck = loadedDecksJSON[i];
 
         if (deck["favorite"])
-            deckCount += buildDeck(deck, deckList);;
+            ownedDeckCount += buildDeck(deck, deckList);;
     }
 
     // For each deck returned, create an element and add to deck list (if not favorite)
-    for(let i = 0; i < loadedDecksJSON.length; i++) {
+    for (let i = 0; i < loadedDecksJSON.length; i++) {
         let deck = loadedDecksJSON[i];
 
         if (!deck["favorite"])
-            deckCount += buildDeck(deck, deckList);;
+            ownedDeckCount += buildDeck(deck, deckList);;
     }
 
-    if (deckCount == 0) {
+    if (ownedDeckCount == 0) {
         const noDecksDiv = document.createElement("div");
         noDecksDiv.classList.add("no-decks-div");
-        const noDecksPara = document.createElement("p");
+        const noDecksPara = document.createElement("h4");
 
         var noDecksText = document.createTextNode("You have no decks! Press 'Add Deck' to create one!");
         if (typeof searchText !== 'undefined') { // Undefined if no search has been entered yet
@@ -94,6 +104,33 @@ function displayDecks() {
         noDecksPara.appendChild(noDecksText);
         noDecksDiv.appendChild(noDecksPara);
         deckList.appendChild(noDecksDiv);
+    }
+
+    /* SHARED DECKS */
+
+    if (loadedSharedDecksJSON.length > 0) {
+        // Add shared decks header
+        const sharedDeckHeader = document.createElement("h1");
+        sharedDeckHeader.classList.add("deck-label");
+        const sharedDeckText = document.createTextNode("Shared Decks");
+        sharedDeckHeader.appendChild(sharedDeckText);
+        deckList.appendChild(sharedDeckHeader);
+    }
+
+    // For each deck returned, create an element and add to deck list (if favorite)
+    for (let i = 0; i < loadedSharedDecksJSON.length; i++) {
+        let deck = loadedSharedDecksJSON[i];
+
+        if (deck["favorite"])
+            buildDeck(deck, deckList);;
+    }
+
+    // For each deck returned, create an element and add to deck list (if not favorite)
+    for (let i = 0; i < loadedSharedDecksJSON.length; i++) {
+        let deck = loadedSharedDecksJSON[i];
+
+        if (!deck["favorite"])
+            buildDeck(deck, deckList);;
     }
 }
 
@@ -126,6 +163,7 @@ function buildDeck(deck, deckList) {
     const descriptionPara = document.createElement("p");
     const description = document.createTextNode(deck["description"]);
     const editButton = document.createElement("Button");
+    editButton.classList.add("deckbtn");
     const editText = document.createTextNode("Edit");
     editButton.onclick = function() {edit_deck(deckDiv.id)};
     const studyButton = document.createElement("Button");
@@ -136,7 +174,11 @@ function buildDeck(deck, deckList) {
     const deleteButton = document.createElement("Button");
     deleteButton.classList.add("deletebtn");
     deleteButton.classList.add("deckbtn");
-    deleteButton.onclick = function() {request_delete_deck(deleteButton, deckDiv.id)};
+    deleteButton.onclick = function() {
+        if (confirm("Are you sure you want to delete " + deck["title"] + "?")) {
+            request_delete_deck(deleteButton, deck["title"], deckDiv.id);
+        }
+    };
     const deleteText = document.createTextNode("Delete");
     const favoriteSpan = document.createElement("Span");
     favoriteSpan.classList.add("fa");
@@ -150,16 +192,16 @@ function buildDeck(deck, deckList) {
 
 
     // Combine elements
+    editButton.appendChild(editText);
     studyButton.appendChild(viewText);
     deleteButton.appendChild(deleteText);
     titleHeader.appendChild(title);
     titleDiv.appendChild(titleHeader);
     descriptionPara.appendChild(description);
     descriptionDiv.appendChild(descriptionPara);
-    descriptionDiv.appendChild(editButton);
-    editButton.appendChild(editText);
-    descriptionDiv.appendChild(studyButton);
     descriptionDiv.appendChild(deleteButton);
+    descriptionDiv.appendChild(editButton);
+    descriptionDiv.appendChild(studyButton);
     descriptionDiv.appendChild(favoriteSpan);
     deckDiv.appendChild(titleDiv);
     deckDiv.appendChild(hr);
@@ -179,9 +221,21 @@ function loadDecks() {
         cache: false,
         timeout: 600000,
         success: function (data) {
-            console.log("SUCCESS : ", data);
             loadedDecksJSON = data; // Assign deck data to global variable
-            displayDecks(); // Call function to display the decks
+            $.ajax({
+                type: "GET",
+                contentType: "application/json",
+                url: "/decks/get/shared",
+                cache: false,
+                timeout: 600000,
+                success: function (data2) {
+                    loadedSharedDecksJSON = data2; // Assign deck data to global variable
+                    displayDecks(); // Call function to display the decks
+                },
+                error: function (e) {
+                    console.log("ERROR : ", e);
+                }
+            });
         },
         error: function (e) {
             console.log("ERROR : ", e);
@@ -194,6 +248,7 @@ function request_add_deck() {
     var requestData = {}
     requestData["title"] = $("#title").val();
     requestData["description"] = $("#description").val();
+    requestData["isPublic"] = $("#public-box").is(':checked');
 
     $("#submitbtn").prop("disabled", true);
 
@@ -218,10 +273,11 @@ function request_add_deck() {
 }
 
 // Sends an ajax request to delete a deck
-function request_delete_deck(element, id) {
+function request_delete_deck(element, title, id) {
 
     var requestData = {}
     requestData["deckID"] = id.substring(5); // Remove prefix from deckID
+    requestData["title"] = title;
 
     element.disabled = true;
 
@@ -234,11 +290,10 @@ function request_delete_deck(element, id) {
         cache: false,
         timeout: 600000,
         success: function (data) {
-            console.log("SUCCESS : ", data);
             loadDecks();
         },
         error: function (e) {
-            console.log("ERROR : ", e);
+            alert(e["responseJSON"]["message"]);
             element.disabled = false;
         }
     });
@@ -308,5 +363,4 @@ function show_form() {
         // the user doesn't need to click it
         document.getElementById("title").focus();
     }
-    console.log("success");
 }

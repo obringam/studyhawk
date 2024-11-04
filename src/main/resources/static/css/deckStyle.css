@@ -65,6 +65,23 @@ header .navbar-brand:visited {
     border: solid 1px #808080;
 }
 
+.form-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-form-label {
+    color: white;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.checkbox {
+    width: 25px;
+    height: 25px;
+}
+
 .add-button {
     text-align: right;
     margin-top: 10px;
@@ -85,6 +102,13 @@ header .navbar-brand:visited {
     border-style: none;
     padding: 10px;
     border-radius: 25px;
+}
+
+#deck-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .decks .title {

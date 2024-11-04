@@ -86,9 +86,6 @@
             <div class="add-button">
                 <button onclick="show_form()"><b>+ Add Deck</b></button>
             </div>
-            <div class="deck-label">
-                <h2>Your Decks</h2>
-            </div>
 
             <div>
                 <p id="empty-list"></p>
@@ -114,6 +111,11 @@
                     <input type="text" id="title" name="title" placeholder="Title" pattern="[a-zA-Z0-9 ]+" required>
                     <br>
                     <input type="text" id="description" name="description" placeholder="Description (Optional)" pattern="[a-zA-Z0-9 ]+" >
+                    <br>
+                    <div class ="form-line">
+                        <label class="add-form-label" for="public-box">Public</label>
+                        <input class="checkbox" type="checkbox" id="public-box" name="public-box">
+                    </div>
                     <br>
                     <input type="submit" id="submitbtn" value="Create Deck">
                     <input type="button" id="cancelbtn" value="Cancel" onclick="hide_form()">

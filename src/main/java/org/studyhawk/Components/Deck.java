@@ -1,23 +1,19 @@
 package org.studyhawk.Components;
 
-import java.util.Objects;
-
 public class Deck {
     private int deckID;
     private String title;
     private String description;
     private boolean favorite;
+    private boolean isPublic; // True if the deck is a public deck
+    private int userID; // The owner of the deck
 
-    public Deck() {}
-
-    public Deck(String title, String description) {
-        this(title, description, false);
-    }
-
-    public Deck(String title, String description, boolean favorite) {
+    public Deck(String title, String description, boolean favorite, boolean isPublic, int userID) {
         this.title = title;
         this.description = description;
         this.favorite = favorite;
+        this.isPublic = isPublic;
+        this.userID = userID;
     }
 
     public void setDeckID(int deckID) {
@@ -36,6 +32,14 @@ public class Deck {
         this.favorite = favorite;
     }
 
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
     public int getDeckID() {
         return this.deckID;
     }
@@ -52,42 +56,21 @@ public class Deck {
         return this.favorite;
     }
 
+    public boolean getIsPublic() {
+        return this.isPublic;
+    }
+
+    public int getUserID() {
+        return this.userID;
+    }
+
     @Override
     public String toString() {
         if (deckID == 0)
-            return String.format("[DECK] Title: %s, Description %s, Favorite: %b", this.title, this.description, this.favorite);
+            return String.format("[DECK] Title: %s, Description %s, Favorite: %b, Public: %b, Owner: %d", this.title, this.description, this.favorite, this.isPublic, this.userID);
         else
-            return String.format("[DECK] ID: %d, Title: %s, Description %s, Favorite: %b", this.deckID, this.title, this.description, this.favorite);
+            return String.format("[DECK] ID: %d, Title: %s, Description %s, Favorite: %b, Public: %b, Owner: %d", this.deckID, this.title, this.description, this.favorite, this.isPublic, this.userID);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Deck))
-            return false;
-        Deck deck = (Deck) o;
-        return Objects.equals(this.deckID, deck.deckID) && Objects.equals(this.title, deck.title)
-            && Objects.equals(this.description, deck.description) && Objects.equals(this.favorite, deck.favorite);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.deckID, this.title, this.description, this.favorite);
-    }
-
-    /**
-     * @return boolean
-     */
-    public boolean favorite() {
-        favorite = !favorite;
-        return favorite;
-    }
-
-    /**
-     * @param newCard
-     */
-    public void addCard(Card newCard) {}
 
     // public void shuffle() {
     //     Random random = new Random();

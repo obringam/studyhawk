@@ -10,7 +10,7 @@ public class MainController {
 
 	@GetMapping("/")
 	public ModelAndView getHomePage() {
-		return new ModelAndView("decks");
+		return new ModelAndView("redirect:/decks");
 	}
 
 	@GetMapping("/signup")
