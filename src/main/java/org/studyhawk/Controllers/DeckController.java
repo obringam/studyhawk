@@ -1,18 +1,22 @@
 package org.studyhawk.Controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.studyhawk.DatabaseHandler;
 import org.studyhawk.Components.Deck;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class DeckController {
@@ -23,22 +27,27 @@ public class DeckController {
 		return new ModelAndView("decks");
 	}
 
-    // Retrieves all decks
+    // Retrieves all owned decks
     @GetMapping("/decks/get")
     public ResponseEntity<?> getDecks() {
-        ArrayList<Deck> decks = DatabaseHandler.getDecks();
+        ArrayList<Deck> decks = DatabaseHandler.getDecksForCurrentUser();
+        return ResponseEntity.ok(decks);
+    }
+
+    // Retrieves all shared decks
+    @GetMapping("/decks/get/shared")
+    public ResponseEntity<?> getSharedDecks() {
+        ArrayList<Deck> decks = DatabaseHandler.getSharedDecksForCurrentUser();
         return ResponseEntity.ok(decks);
     }
 
     // Retrieves a deck by its ID
     @GetMapping("/decks/get/{deckID}")
     public ResponseEntity<?> getCards(@PathVariable("deckID") String deckID) {
-        Deck deck;
-        try {
-            deck = DatabaseHandler.getDeckByID(Integer.parseInt(deckID));
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body("Invalid deckID");
-        }
+        int intDeckID = Integer.parseInt(deckID);
+        Deck deck = DatabaseHandler.getDeckByID(intDeckID);
+        if (deck == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find deck");
         return ResponseEntity.ok(deck);
     }
 
@@ -56,14 +65,24 @@ public class DeckController {
 
     // Removes a deck
     @PostMapping("/decks/remove")
-    public ResponseEntity<?> removeDeck(@RequestBody Deck deck, Errors errors) {
+    public ResponseEntity<Map<String, String>> removeDeck(@RequestBody Deck deck, Errors errors) {
+        Map<String, String> response = new HashMap<>();
+
         //If error, just return a 400 bad request, along with the error message
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            response.put("message", "[ERROR] Bad request");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        DatabaseHandler.removeDeck(deck);
-        return ResponseEntity.ok(deck);
+        try {
+            DatabaseHandler.removeDeckByID(deck.getDeckID());
+        } catch (AccessDeniedException e) {
+            response.put("message", "You do not have permission to delete " + deck.getTitle() + "!");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        response.put("message", deck.getTitle() + " was deleted successfully!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // Favorites a deck
