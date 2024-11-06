@@ -16,18 +16,22 @@ function getDeckID() {
 }
 
 function displayCardEditor() {
-    const carEditorContainer = document.getElementById("card-editor-container");
+    const cardEditorContainer = document.getElementById("editor-container");
 
-    const cardNum = carEditorContainer.document.createElement("label");
-    cardNum.textContent = numOfCards;
-    cardNum.classList.add("editor-container");
+    while (cardEditorContainer.firstChild) {
+        cardContainer.removeChild(cardContainer.lastChild);
+    }
+
 
 }
 
 // Display the current deck info on the screen
 function displayDeckInfo() {
     const title = document.getElementById("deck-title");
-    title.textContent = loadedDeckJSON["title"];
+    title.value = loadedDeckJSON["title"];
+
+    const decription = document.getElementById("deck-description");
+    decription.value = loadedDeckJSON["description"];
 }
 
 function loadDeckInfo() {

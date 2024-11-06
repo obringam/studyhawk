@@ -62,16 +62,32 @@
         </nav>
         <!--Bread Crumbs-->
         <div>
-            <h1 id="deck-title"></h1>
+            <h1 id="deck-title-label">Edit Deck</h1>
         </div>
-        <!--Card Edit Object-->
-        <div class="editor-container">
-            <div id="card-editor-container">
-
+        <!--Body Content-->
+        <div id="body-content">
+            <div class="deck-data">
+                <input id="deck-title" type="text" value="" placeholder="Title">
+                <br>
+                <input id="deck-description" type="text" value="" placeholder="Description">
+                <br>
+                <select>
+                    <option value="CSE-201">CSE 201</option>
+                    <option value="CSE-274">CSE 274</option>
+                    <option value="CSE-374">CSE 374</option>
+                    <option value="CSE-202">CSE 202</option>
+                    <option value="CSE-385">CSE 385</option>
+                </select>
             </div>
+            <!--Card Edit Object-->
+            <div id="editor-container">
+                <div class="card-editor-container"></div>
+            </div>
+            <!--Card Edit Object-->
         </div>
         <div class="new-card-btn">
             <input type="button" value="New Card">
         </div>
+        <!--Body Content-->
     </body>
 </html>
