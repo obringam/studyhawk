@@ -53,14 +53,19 @@ public class DeckController {
 
     // Adds a deck
     @PostMapping("/decks/add")
-    public ResponseEntity<?> addDeck(@RequestBody Deck deck, Errors errors) {
+    public ResponseEntity<Map<String, String>> addDeck(@RequestBody Deck deck, Errors errors) {
+        Map<String, String> response = new HashMap<>();
+
         //If error, just return a 400 bad request, along with the error message
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            response.put("message", "[ERROR] Bad request");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
         DatabaseHandler.insertDeck(deck);
-        return ResponseEntity.ok(deck);
+
+        response.put("message", deck.getTitle() + " was added successfully!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // Removes a deck
@@ -82,6 +87,28 @@ public class DeckController {
         }
 
         response.put("message", deck.getTitle() + " was deleted successfully!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Update a deck
+    @PostMapping("/decks/update")
+    public ResponseEntity<Map<String, String>> updateDeck(@RequestBody Deck deck, Errors errors) {
+        Map<String, String> response = new HashMap<>();
+
+        //If error, just return a 400 bad request, along with the error message
+        if (errors.hasErrors()) {
+            response.put("message", "[ERROR] Bad request");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            DatabaseHandler.updateDeck(deck);
+        } catch (AccessDeniedException e) {
+            response.put("message", "You do not have permission to update " + deck.getTitle() + "!");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        response.put("message", deck.getTitle() + " was updated successfully!");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

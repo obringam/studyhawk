@@ -29,7 +29,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#home">Home</a></li>
-                <li class="breadcrumb-item" aria-current="page"><a href="http://localhost:8080/decks">Decks</a></li>
+                <li class="breadcrumb-item"><a href="http://localhost:8080/decks">Decks</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Edit Deck</li>
             </ol>
         </nav>
@@ -60,6 +60,8 @@
         </div>
         <div class="new-card-btn">
             <input type="button" value="New Card" onclick="addCard()">
+            <input type="button" value="Save Changes" onclick="saveChanges()">
+            <p id="changes-saved-label">Your changes are saved</p>
         </div>
         <!--Body Content-->
     </body>
