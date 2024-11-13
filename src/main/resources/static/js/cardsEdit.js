@@ -10,7 +10,7 @@ function loadPage() {
     loadCards();
 
     const title = document.getElementById("deck-title");
-    const decription = document.getElementById("deck-description");
+    const description = document.getElementById("deck-description");
     title.addEventListener("input", function() {
         updateDeck();
     });
