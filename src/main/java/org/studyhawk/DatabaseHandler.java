@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.springframework.http.HttpStatus;
@@ -485,6 +486,104 @@ public class DatabaseHandler {
     }
 
     /**
+     * Update a deck in the database by its ID
+     * @param deckID The ID of the deck
+     * @param deck The new deck information
+     */
+    public static void updateDeck(Deck deck) {
+        Connection conn = DatabaseHandler.getConnection();
+
+        // Get current user ID
+        int currentUserID = DatabaseHandler.getUserFromSecurityContext(conn).getUserID();
+
+        try {
+            String updateSQL = "UPDATE studyhawk.Decks SET title = ?, description = ? WHERE deckID = ? AND userID = ?";
+            PreparedStatement statement = conn.prepareStatement(updateSQL);
+
+            statement.setString(1, deck.getTitle());
+            statement.setString(2, deck.getDescription());
+            statement.setInt(3, deck.getDeckID());
+            statement.setInt(4, currentUserID);
+
+            statement.executeUpdate();
+
+            System.out.printf("[DATABASE] Updated Deck in Decks table: %s%n", deck);
+
+        } catch (SQLException updateFailed) {
+            System.out.println("[ERROR] TABLE UPDATE FAILED");
+            System.out.println(updateFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+
+    }
+
+    /**
+     * Update cards in the database
+     * @param cards The new card information
+     */
+    public static void updateCards(List<Card> cards) {
+        if (cards.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot update 0 cards");
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        getDeckByID(cards.get(0).getDeckID()); // Ensure access to the deck
+
+        try {
+            for (Card card : cards) {
+                String updateSQL = "UPDATE studyhawk.Cards SET term = ?, definition = ? WHERE cardID = ?";
+                PreparedStatement statement = conn.prepareStatement(updateSQL);
+
+                statement.setString(1, card.getTerm());
+                statement.setString(2, card.getDefinition());
+                statement.setInt(3, card.getCardID());
+
+                statement.executeUpdate();
+
+                System.out.printf("[DATABASE] Updated Card in Cards table: %s%n", card);
+            }
+
+        } catch (SQLException updateFailed) {
+            System.out.println("[ERROR] TABLE UPDATE FAILED");
+            System.out.println(updateFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+
+    }
+
+    /**
+     * Update a card in the database
+     * @param card The new card information
+     */
+    public static void updateCard(Card card) {
+        Connection conn = DatabaseHandler.getConnection();
+
+        getDeckByID(card.getDeckID()); // Ensure access to the deck
+
+        try {
+            String updateSQL = "UPDATE studyhawk.Cards SET term = ?, definition = ? WHERE cardID = ?";
+            PreparedStatement statement = conn.prepareStatement(updateSQL);
+
+            statement.setString(1, card.getTerm());
+            statement.setString(2, card.getDefinition());
+            statement.setInt(3, card.getCardID());
+
+            statement.executeUpdate();
+
+            System.out.printf("[DATABASE] Updated Card in Cards table: %s%n", card);
+
+        } catch (SQLException updateFailed) {
+            System.out.println("[ERROR] TABLE UPDATE FAILED");
+            System.out.println(updateFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+
+    }
+
+    /**
      * Inserts a deck into the database
      * @param deck
      */
@@ -519,15 +618,65 @@ public class DatabaseHandler {
     }
 
     /**
-     * Inserts a card into the database
-     * @param card The card to insert
-     * @param deck The deck to insert the card into
+     * Inserts a list of cards into the database
+     * @param cards The cards to insert
+     * @param deckID The ID of the deck to insert the cards into
      */
-    public static void insertCard(Card card, Deck deck) {
+    public static void insertCards(List<Card> cards, int deckID) {
 
-        card.setDeckID(deck.getDeckID());
+        for (Card card : cards) {
+            card.setDeckID(deckID);
+        }
 
         Connection conn = DatabaseHandler.getConnection();
+
+        Deck deck = getDeckByID(deckID, conn); // Ensures access to the deck
+
+        if (deck == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find deck");
+        }
+
+        try {
+            for (Card card : cards) {
+                String insertSQL = "INSERT INTO studyhawk.Cards (deckID, term, definition, favorite) VALUES(?,?,?,?)";
+                PreparedStatement statement = conn.prepareStatement(insertSQL);
+
+                statement.setInt(1, card.getDeckID());
+                statement.setString(2, card.getTerm());
+                statement.setString(3, card.getDefinition());
+                statement.setBoolean(4, card.getFavorite());
+
+                statement.executeUpdate();
+
+                System.out.printf("[DATABASE] Inserted into Cards table: %s%n", card);
+            }
+
+        } catch (SQLException insertFailed) {
+            System.out.println("[ERROR] TABLE INSERT FAILED");
+            System.out.println(insertFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+
+    }
+
+
+    /**
+     * Inserts a card into the database
+     * @param card The card to insert
+     * @param deckID The ID of the deck to insert the card into
+     */
+    public static void insertCard(Card card, int deckID) {
+
+        card.setDeckID(deckID);
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        Deck deck = getDeckByID(deckID, conn); // Ensures access to the deck
+
+        if (deck == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find deck");
+        }
 
         try {
             String insertSQL = "INSERT INTO studyhawk.Cards (deckID, term, definition, favorite) VALUES(?,?,?,?)";
@@ -647,6 +796,59 @@ public class DatabaseHandler {
 
         DatabaseHandler.closeConnection(conn);
         return false;
+
+    }
+
+    /**
+     * Remove cards from the database
+     * @param cards The cards to remove
+     */
+    public static boolean removeCards(List<Card> cards) {
+
+        if (cards.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot remove 0 cards");
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        ArrayList<Integer> cardIDs = new ArrayList<>(); // Store all cardIDs to delete
+
+        // Make sure all the cards have the same deckID
+        int deckID = cards.get(0).getDeckID();
+        for (Card card : cards) {
+            if (card.getDeckID() != deckID)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot remove cards from multiple decks at once");
+
+            cardIDs.add(card.getCardID()); // Add ID to list
+        }
+        getDeckByID(deckID); // Ensure access to the deck
+
+        try {
+            String inputSQL = String.join(",", cardIDs.stream().map(id -> "?").toArray(String[]::new));
+            String removeSQL = "DELETE FROM studyhawk.Cards WHERE cardID IN (" + inputSQL + ")";
+            PreparedStatement statement = conn.prepareStatement(removeSQL);
+
+            for (int i = 0; i < cardIDs.size(); i++) {
+                statement.setInt(i + 1, cardIDs.get(i));
+            }
+
+            int rowUpdated = statement.executeUpdate();
+
+            if (rowUpdated > 0) {
+                System.out.println("[DATABASE] Removed many cards from Cards table");
+                DatabaseHandler.closeConnection(conn);
+                return true;
+            } else {
+                System.out.println("[ERROR] COULD NOT DELETE CARDS. CARD DOES NOT EXIST");
+            }
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] DELETING CARDS FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+        return false;
+
 
     }
 

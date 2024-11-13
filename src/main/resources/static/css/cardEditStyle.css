@@ -69,7 +69,7 @@ header .navbar-brand:visited {
 }
 
 .edit-card-object .card-input {
-    width: 45%;
+    width: 43%;
     border: none;
     border-bottom: 2px solid #ccc; /* Light underline color */
     outline: none;
@@ -103,4 +103,24 @@ header .navbar-brand:visited {
     border-radius: 25px;
     padding: 5px;
     align-items: center;
+}
+
+.deleteBtn {
+    background-color: transparent;
+    color: black;
+    border: transparent;
+    border-width: 0;
+    width: 40px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50px;
+    font-size: 15px;
+    border-radius: 20px;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    -ms-border-radius: 50px;
+    -o-border-radius: 50px;
+}
+
+.deleteBtn:hover {
+    background-color: rgb(220, 220, 220);
 }
