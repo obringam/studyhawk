@@ -1,5 +1,6 @@
 var loadedDeckJSON; // The loaded deck info JSON at any given time
 var loadedCardsJSON; // The loaded cards JSON at any given time
+var originalCardsJSON = null; // copy of original cards for shuffle functionality
 var cardIndex = 0; // Index of card currently being displayed
 var flipped = false; // True if card is flipped and definition is being displayed
 
@@ -31,6 +32,34 @@ function nextCard() {
         cardIndex++;
         flipped = false;
         displayCard();
+    }
+}
+
+function shuffleCards() {
+    // preserve the original order if it hasn't been saved already
+    if (!originalCardsJSON) {
+        originalCardsJSON = [...loadedCardsJSON];
+    }
+
+    for (let i = loadedCardsJSON.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [loadedCardsJSON[i], loadedCardsJSON[j]] = [loadedCardsJSON[j], loadedCardsJSON[i]];
+    }
+
+    cardIndex = 0; // reset to the first card after shuffling
+    flipped = false; // ensure card is not flipped
+    displayCard(); // display the first card after shuffle
+}
+
+// restores the original order of the cards
+function unshuffleCards() {
+    if (originalCardsJSON) {
+        loadedCardsJSON = [...originalCardsJSON]; // restore original order
+        cardIndex = 0; // reset to the first card
+        flipped = false; // ensure card is not flipped
+        displayCard(); // display the first card in the restored order
+    } else {
+        console.log("The deck has not been shuffled, so it cannot be unshuffled.");
     }
 }
 
