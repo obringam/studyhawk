@@ -800,6 +800,43 @@ public class DatabaseHandler {
     }
 
     /**
+     * Remove a deck sharing ownership from the database
+     * @param deckID The ID of the deck ownership to remove
+     */
+    public static boolean removeSharedDeckByID(int deckID) throws AccessDeniedException {
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        UserAccount currentUser = DatabaseHandler.getUserFromSecurityContext(conn);
+
+        try {
+            String querySQL = "DELETE FROM studyhawk.DeckOwnerships WHERE userID = (?) AND deckID = (?)";
+            PreparedStatement statement = conn.prepareStatement(querySQL);
+
+            statement.setInt(1, currentUser.getUserID());
+            statement.setInt(2, deckID);
+
+            int rowUpdated = statement.executeUpdate();
+
+            if (rowUpdated > 0) {
+                System.out.printf("[DATABASE] Removed from DeckOwnerships table for userID: %d and deckID: %d", currentUser.getUserID(), deckID);
+                DatabaseHandler.closeConnection(conn);
+                return true;
+            } else {
+                System.out.println("[ERROR] COULD NOT DELETE DECK OWNERSHIP. DECK OWNERSHIP DOES NOT EXIST");
+            }
+
+        } catch (SQLException queryFailed) {
+            System.out.println("[ERROR] DELETING DECK OWNERSHIP FAILED");
+            System.out.println(queryFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
+        return false;
+
+    }
+
+    /**
      * Remove cards from the database
      * @param cards The cards to remove
      */

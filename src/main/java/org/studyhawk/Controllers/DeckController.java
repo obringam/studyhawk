@@ -90,6 +90,28 @@ public class DeckController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // Removes a deck from being shared with a user
+    @PostMapping("/decks/shared/remove")
+    public ResponseEntity<Map<String, String>> removeSharedDeck(@RequestBody Deck deck, Errors errors) {
+        Map<String, String> response = new HashMap<>();
+
+        //If error, just return a 400 bad request, along with the error message
+        if (errors.hasErrors()) {
+            response.put("message", "[ERROR] Bad request");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            DatabaseHandler.removeSharedDeckByID(deck.getDeckID());
+        } catch (AccessDeniedException e) {
+            response.put("message", "You do not have permission to remove " + deck.getTitle() + " from shared decks!");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        response.put("message", deck.getTitle() + " was removed from shared decks successfully!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     // Update a deck
     @PostMapping("/decks/update")
     public ResponseEntity<Map<String, String>> updateDeck(@RequestBody Deck deck, Errors errors) {

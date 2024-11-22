@@ -78,7 +78,7 @@ function displayDecks() {
         let deck = loadedDecksJSON[i];
 
         if (deck["favorite"])
-            ownedDeckCount += buildDeck(deck, deckList);;
+            ownedDeckCount += buildDeck(deck, deckList, false);
     }
 
     // For each deck returned, create an element and add to deck list (if not favorite)
@@ -86,7 +86,7 @@ function displayDecks() {
         let deck = loadedDecksJSON[i];
 
         if (!deck["favorite"])
-            ownedDeckCount += buildDeck(deck, deckList);;
+            ownedDeckCount += buildDeck(deck, deckList, false);
     }
 
     if (ownedDeckCount == 0) {
@@ -117,24 +117,14 @@ function displayDecks() {
         deckList.appendChild(sharedDeckHeader);
     }
 
-    // For each deck returned, create an element and add to deck list (if favorite)
+    // For each deck returned, create an element and add to deck list
     for (let i = 0; i < loadedSharedDecksJSON.length; i++) {
         let deck = loadedSharedDecksJSON[i];
-
-        if (deck["favorite"])
-            buildDeck(deck, deckList);;
-    }
-
-    // For each deck returned, create an element and add to deck list (if not favorite)
-    for (let i = 0; i < loadedSharedDecksJSON.length; i++) {
-        let deck = loadedSharedDecksJSON[i];
-
-        if (!deck["favorite"])
-            buildDeck(deck, deckList);;
+        buildDeck(deck, deckList, true);
     }
 }
 
-function buildDeck(deck, deckList) {
+function buildDeck(deck, deckList, isShared) {
     // If search text is not empty, check if deck title or description
     // contains the text. If it doesn't, skip this deck.
     if (typeof searchText !== 'undefined') { // Undefined if no search has been entered yet
@@ -174,21 +164,32 @@ function buildDeck(deck, deckList) {
     const deleteButton = document.createElement("Button");
     deleteButton.classList.add("deletebtn");
     deleteButton.classList.add("deckbtn");
-    deleteButton.onclick = function() {
-        if (confirm("Are you sure you want to delete " + deck["title"] + "?")) {
-            request_delete_deck(deleteButton, deck["title"], deckDiv.id);
-        }
-    };
-    const deleteText = document.createTextNode("Delete");
-    const favoriteSpan = document.createElement("Span");
-    favoriteSpan.classList.add("fa");
-    favoriteSpan.classList.add("fa-star");
-    favoriteSpan.classList.add("favoritespan")
-    // favoriteSpan.classList.add("deckbtn");
-    if (deck["favorite"]) {
-        favoriteSpan.classList.add("checked");
+    var deleteText = document.createTextNode("Delete");
+    if (isShared) {
+        deleteButton.onclick = function() {
+            if (confirm("Are you sure you want to remove " + deck["title"] + " from your shared decks?")) {
+                request_remove_shared_deck(deleteButton, deck["title"], deckDiv.id);
+            }
+        };
+        deleteText = document.createTextNode("Remove");
+    } else {
+        deleteButton.onclick = function() {
+            if (confirm("Are you sure you want to delete " + deck["title"] + "?")) {
+                request_delete_deck(deleteButton, deck["title"], deckDiv.id);
+            }
+        };
     }
-    favoriteSpan.onclick = function() {toggle_favorite(favoriteSpan, deckDiv.id)};
+    const favoriteSpan = document.createElement("Span");
+    if (!isShared) {
+        favoriteSpan.classList.add("fa");
+        favoriteSpan.classList.add("fa-star");
+        favoriteSpan.classList.add("favoritespan")
+        // favoriteSpan.classList.add("deckbtn");
+        if (deck["favorite"]) {
+            favoriteSpan.classList.add("checked");
+        }
+        favoriteSpan.onclick = function() {toggle_favorite(favoriteSpan, deckDiv.id)};
+    }
 
 
     // Combine elements
@@ -202,7 +203,9 @@ function buildDeck(deck, deckList) {
     descriptionDiv.appendChild(deleteButton);
     descriptionDiv.appendChild(editButton);
     descriptionDiv.appendChild(studyButton);
-    descriptionDiv.appendChild(favoriteSpan);
+    if (!isShared) {
+        descriptionDiv.appendChild(favoriteSpan);
+    }
     deckDiv.appendChild(titleDiv);
     deckDiv.appendChild(hr);
     deckDiv.appendChild(descriptionDiv);
@@ -298,6 +301,34 @@ function request_delete_deck(element, title, id) {
         }
     });
 }
+
+// Sends an ajax request to remove a shared deck for the user
+function request_remove_shared_deck(element, title, id) {
+
+    var requestData = {}
+    requestData["deckID"] = id.substring(5); // Remove prefix from deckID
+    requestData["title"] = title;
+
+    element.disabled = true;
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "/decks/shared/remove",
+        data: JSON.stringify(requestData),
+        dataType: 'json',
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+            loadDecks();
+        },
+        error: function (e) {
+            alert(e["responseJSON"]["message"]);
+            element.disabled = false;
+        }
+    });
+}
+
 
 // Sends an ajax request to toggle favorite on a deck
 function request_favorite_deck(id) {
