@@ -170,6 +170,52 @@ header .navbar-brand:visited {
     text-align: center;
 }
 
+#share-container {
+    width: 400px;
+    height: 300px;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -100%); /* Start above the viewport */
+    background-color: rgba(49, 49, 49, 0.925); /* Semi-transparent background */
+    border: 1px solid black;
+    display: flex;
+    margin: auto;
+    border-radius: 15px;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 1000;
+    visibility: hidden;
+}
+
+#share-container h1 {
+    color: white;
+    text-align: center;
+    font-family: 'roboto';
+}
+
+#share-container #username {
+    border: 1px solid black;
+    border-radius: 25px;
+    width: 100%;
+    height: 50px;
+    font-size:x-large;
+    text-align: center;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+#share-container #sharedsubmitbtn {
+    border-radius: 25px;
+    padding: 5px;
+}
+
+#share-container #sharedcancelbtn {
+    margin-left: 150px;
+    border-radius: 25px;
+    padding: 5px;
+}
+
 #container {
     width: 400px;
     height: 300px;

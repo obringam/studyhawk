@@ -26,6 +26,8 @@ function register_user() {
 
     if (password == confirmPassword) {
         request_create_user(requestData);
+    } else {
+        alert("Please type the same password when confirming the password!");
     }
 
 }
@@ -49,12 +51,13 @@ function request_create_user(requestData) {
         //     xhr.setRequestHeader(header, token);
         // },
         success: function (data) {
-            console.log("SUCCESS : ", data);
+            console.log(data);
             $("#submit").prop("disabled", false);
             navigate_to_login();
         },
         error: function (e) {
-            console.log("ERROR : ", e);
+            console.log(e);
+            alert(e["responseJSON"]["message"])
             $("#submit").prop("disabled", false);
         }
     });

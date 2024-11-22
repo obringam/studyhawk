@@ -383,11 +383,11 @@ public class DatabaseHandler {
         // Get deck ownership objects from database
         try {
 
-            String querySQL = "SELECT * FROM studyhawk.DeckOwnerships WHERE userID = (?) AND deckID = (?)";
+            String querySQL = "SELECT * FROM studyhawk.DeckOwnerships WHERE deckID = (?) AND userID = (?);";
             PreparedStatement statement = conn.prepareStatement(querySQL);
 
-            statement.setInt(1, userID);
-            statement.setInt(2, deckID);
+            statement.setInt(1, deckID);
+            statement.setInt(2, userID);
 
             ResultSet result = statement.executeQuery();
 
@@ -703,8 +703,9 @@ public class DatabaseHandler {
     /**
      * Inserts a user into the database
      * @param user The user to insert
+     * @throws Exception When the user already exists
      */
-    public static void insertUser(UserAccount user) {
+    public static void insertUser(UserAccount user) throws Exception {
 
         Connection conn = DatabaseHandler.getConnection();
 
@@ -721,8 +722,40 @@ public class DatabaseHandler {
             System.out.printf("[DATABASE] Inserted into Users table: %s%n", user);
 
         } catch (SQLException insertFailed) {
-            System.out.println("[ERROR] TABLE INSERT FAILED");
-            System.out.println(insertFailed.getMessage());
+
+            try {
+                String querySQL = "SELECT * FROM studyhawk.Users WHERE username = (?)";
+                PreparedStatement statement2 = conn.prepareStatement(querySQL);
+
+                statement2.setString(1, user.getUsername());
+
+                ResultSet result = statement2.executeQuery();
+
+                if (result.next()) {
+                    throw new Exception("That username is already taken");
+                }
+
+            } catch (SQLException queryFailed) {
+                System.out.println("[ERROR] TABLE QUERY FAILED");
+                throw new Exception("A table query failed!");
+            }
+
+            try {
+                String querySQL = "SELECT * FROM studyhawk.Users WHERE email = (?)";
+                PreparedStatement statement2 = conn.prepareStatement(querySQL);
+
+                statement2.setString(1, user.getEmail());
+
+                ResultSet result = statement2.executeQuery();
+
+                if (result.next()) {
+                    throw new Exception("That email is already taken");
+                }
+
+            } catch (SQLException queryFailed) {
+                System.out.println("[ERROR] TABLE QUERY FAILED");
+                throw new Exception("A table query failed!");
+            }
         }
 
         DatabaseHandler.closeConnection(conn);
@@ -920,6 +953,66 @@ public class DatabaseHandler {
 
         DatabaseHandler.closeConnection(conn);
         return false;
+
+    }
+
+    /**
+     * Attempt to share a deck with a user
+     * @param deckID ID of the deck
+     * @param username Username of the user to share it to
+     * @throws Exception If user is not found
+     */
+    public static void shareDeckWithUser(int deckID, String username) throws Exception {
+
+        Connection conn = DatabaseHandler.getConnection();
+
+        // Retrieve the deck (checks access as well)
+        Deck deck = DatabaseHandler.getDeckByID(deckID, conn);
+
+        if (deck == null) {
+            throw new Exception("The deck was not found!");
+        }
+
+        // Get the user for the sharing
+        UserAccount user = DatabaseHandler.getUserByUsername(username);
+
+        if (user == null) {
+            throw new Exception("There is no user with the provided username!");
+        }
+
+        // Get current user
+        UserAccount currentUser = DatabaseHandler.getUserFromSecurityContext(conn);
+
+        // Ensure current user is not the user being shared to
+        if (currentUser.getUserID() == user.getUserID()) {
+            throw new Exception("You cannot share a deck to yourself!");
+        }
+
+        // See if a deckOwnership record exists
+        DeckOwnership checkDeckOwnership = DatabaseHandler.getDeckOwnership(user.getUserID(), deckID, conn);
+
+        if (checkDeckOwnership != null) {
+            throw new Exception("The deck is alreay shared with that user!");
+        }
+
+        try {
+            String insertSQL = "INSERT INTO studyhawk.DeckOwnerships (deckID, userID, privelage) VALUES (?,?,?)";
+            PreparedStatement statement = conn.prepareStatement(insertSQL);
+
+            statement.setInt(1, deckID);
+            statement.setInt(2, user.getUserID());
+            statement.setInt(3, 0);
+
+            statement.executeUpdate();
+
+            System.out.println("[DATABASE] Inserted into DeckOwnerships table");
+
+        } catch (SQLException insertFailed) {
+            System.out.println("[ERROR] TABLE INSERT FAILED");
+            System.out.println(insertFailed.getMessage());
+        }
+
+        DatabaseHandler.closeConnection(conn);
 
     }
 

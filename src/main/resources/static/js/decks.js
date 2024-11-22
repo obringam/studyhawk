@@ -13,6 +13,19 @@ $(document).ready(function () {
         }
     });
 
+    // Override default submit behavior for the share-form form
+    $("#share-form").submit(function (event) {
+        event.preventDefault();
+        if (this.checkValidity()) {
+            // Hide the form if validation passes
+            hide_share_form();
+            request_share_deck();
+        } else {
+            // If validation fails, let the browser show the default validation messages
+            this.reportValidity();
+        }
+    });
+
     // Override default submit behavior for the search-form form
     $("#search-form").submit(function (event) {
         event.preventDefault();
@@ -190,18 +203,32 @@ function buildDeck(deck, deckList, isShared) {
         }
         favoriteSpan.onclick = function() {toggle_favorite(favoriteSpan, deckDiv.id)};
     }
+    const shareButton = document.createElement("Button");
+    shareButton.classList.add("deckbtn");
+    const shareText = document.createTextNode("Share");
+    if (!isShared) {
+        shareButton.onclick = function() {
+            currentShareDeckID = deckDiv.id;
+            currentShareDeckTitle = deck["title"];
+            show_share_form();
+        };
+    }
 
 
     // Combine elements
     editButton.appendChild(editText);
     studyButton.appendChild(viewText);
     deleteButton.appendChild(deleteText);
+    shareButton.appendChild(shareText);
     titleHeader.appendChild(title);
     titleDiv.appendChild(titleHeader);
     descriptionPara.appendChild(description);
     descriptionDiv.appendChild(descriptionPara);
     descriptionDiv.appendChild(deleteButton);
     descriptionDiv.appendChild(editButton);
+    if (!isShared) {
+        descriptionDiv.appendChild(shareButton);
+    }
     descriptionDiv.appendChild(studyButton);
     if (!isShared) {
         descriptionDiv.appendChild(favoriteSpan);
@@ -271,6 +298,34 @@ function request_add_deck() {
         error: function (e) {
             console.log("ERROR : ", e);
             $("#submitbtn").prop("disabled", false);
+        }
+    });
+}
+
+// Sends an ajax request to share a deck with a user
+function request_share_deck() {
+    var requestData = {}
+    requestData["deckID"] = currentShareDeckID.substring(5); // Remove prefix from deckID
+    requestData["title"] = currentShareDeckTitle;
+    requestData["username"] = $("#username").val();
+
+    $("#sharedsubmitbtn").prop("disabled", true);
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "/decks/shared/share",
+        data: JSON.stringify(requestData),
+        dataType: 'json',
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+            alert("The deck was shared successfully!");
+            $("#sharedsubmitbtn").prop("disabled", false);
+        },
+        error: function (e) {
+            alert(e["responseJSON"]["message"]);
+            $("#sharedsubmitbtn").prop("disabled", false);
         }
     });
 }
@@ -381,6 +436,7 @@ function hide_form() {
 }
 
 function show_form() {
+    hide_share_form();
     // Checks to see if element is not visible
     if (!isVisible) {
         // Reset all of the fields
@@ -393,5 +449,37 @@ function show_form() {
         // Get the title text box and set focus to it that way
         // the user doesn't need to click it
         document.getElementById("title").focus();
+    }
+}
+
+// Visibility checker
+var shareIsVisible = false;
+var currentShareDeckID = null;
+var currentShareDeckTitle = null;
+
+function show_share_form() {
+    hide_form();
+
+    if (!shareIsVisible) {
+        // Sets visibility checker to false
+        shareIsVisible = true;
+        // Grabs div element
+        var element = document.getElementById("share-container");
+        // Actually sets its visibility to hidden
+        element.style.visibility = "visible";
+
+        document.getElementById("share-form").reset();
+        document.getElementById("username").focus();
+    }
+}
+
+function hide_share_form() {
+    if (shareIsVisible) {
+        // Sets visibility checker to false
+        shareIsVisible = false;
+        // Grabs div element
+        var element = document.getElementById("share-container");
+        // Actually sets its visibility to hidden
+        element.style.visibility = "hidden";
     }
 }
