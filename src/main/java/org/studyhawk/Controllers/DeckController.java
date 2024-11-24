@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.studyhawk.DatabaseHandler;
 import org.studyhawk.Components.Deck;
+import org.studyhawk.Requests.SharedDeckRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,6 +110,34 @@ public class DeckController {
         }
 
         response.put("message", deck.getTitle() + " was removed from shared decks successfully!");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Removes a deck from being shared with a user
+    @PostMapping("/decks/shared/share")
+    public ResponseEntity<Map<String, String>> shareDeck(@RequestBody SharedDeckRequest request, Errors errors) {
+        Map<String, String> response = new HashMap<>();
+
+        //If error, just return a 400 bad request, along with the error message
+        if (errors.hasErrors()) {
+            response.put("message", "[ERROR] Bad request");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        int deckID = Integer.parseInt(request.getDeckID());
+
+        // Attempt to share deck with user
+        try {
+            DatabaseHandler.shareDeckWithUser(deckID, request.getUsername());
+        } catch (AccessDeniedException e) {
+            response.put("message", "You do not have permission to share " + request.getTitle() + " this deck!");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        response.put("message", request.getTitle() + " was removed from shared decks successfully!");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
