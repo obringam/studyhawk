@@ -47,7 +47,7 @@ function loadPage() {
 // Updates the search texts and redisplays the decks
 function search(text) {
     // Update global var with search text from form (change to all lowercase)
-    searchText = text;
+    searchText = text.toLowerCase();
     // Call display decks to update the displayed decks
     displayDecks();
 }

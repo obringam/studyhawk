@@ -3,6 +3,7 @@ var loadedCardsJSON; // The loaded cards JSON at any given time
 var originalCardsJSON = null; // copy of original cards for shuffle functionality
 var cardIndex = 0; // Index of card currently being displayed
 var flipped = false; // True if card is flipped and definition is being displayed
+var isTermOnFront = true; // True if the term is on the front first before being flipped
 
 // Runs on startup of page
 function loadPage() {
@@ -107,16 +108,16 @@ function displayCard() {
         cardDiv.id = "card-" + card["cardID"];
         cardDiv.onclick = function () {flipCard()};
 
-        if (flipped) {
-            // Definition is shown
-            const definition = document.createTextNode(card["definition"]);
-            cardDiv.appendChild(definition);
-            cardDiv.classList.add("definition");
-        } else {
+        if ((flipped || isTermOnFront) && !(flipped && isTermOnFront)) {
             // Term is shown
             const term = document.createTextNode(card["term"]);
             cardDiv.appendChild(term);
             cardDiv.classList.add("term");
+        } else {
+            // Definition is shown
+            const definition = document.createTextNode(card["definition"]);
+            cardDiv.appendChild(definition);
+            cardDiv.classList.add("definition");
         }
 
         // Update card position label
@@ -175,4 +176,18 @@ function loadCards() {
             console.log("ERROR : ", e);
         }
     });
+}
+
+// Toggles the direction the card starts in before being flipped
+function toggleCardDirection(button) {
+
+    if (isTermOnFront) {
+        button.textContent = "SHOW TERM FIRST";
+    } else {
+        button.textContent = "SHOW DEFINITION FIRST";
+    }
+
+    isTermOnFront = !isTermOnFront;
+
+    displayCard();
 }
