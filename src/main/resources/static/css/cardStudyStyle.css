@@ -9,7 +9,7 @@ html, body {
 
 header nav {
     background-color: #b61e2e;
-    height: 75px;
+    z-index: 9999;
 }
 
 header .navbar-brand {

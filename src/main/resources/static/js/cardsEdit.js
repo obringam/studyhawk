@@ -36,26 +36,76 @@ function buildCard(card, cardList, i) {
     const cardNum = document.createElement("label");
     cardNum.classList.add("card-num");
     cardNum.innerHTML = i;
+
     const br1 = document.createElement("br");
+
     const term = document.createElement("input");
-    term.classList.add("card-input");
-    term.classList.add("term-input");
+    term.classList.add("card-input", "term-input");
     term.value = card["term"];
     term.placeholder = "Term";
-    term.addEventListener("input", function() {
+    term.addEventListener("input", function () {
         updateCard(cardCon);
     });
+
     const definition = document.createElement("input");
-    definition.classList.add("card-input");
-    definition.classList.add("definition-input");
+    definition.classList.add("card-input", "definition-input");
     definition.value = card["definition"];
     definition.placeholder = "Definition";
-    definition.addEventListener("input", function() {
+    definition.addEventListener("input", function () {
         updateCard(cardCon);
     });
-    const deleteButton = document.createElement("Button");
+
+    // Add Image Button
+    const addImgBtn = document.createElement("button");
+    addImgBtn.classList.add("imgbtn");
+
+    const imgIcon = document.createElement("img");
+    imgIcon.classList.add("img-icon");
+    imgIcon.setAttribute("src", "/images/image.svg");
+    imgIcon.style.height = "25px"; // Set image height to 25px
+    addImgBtn.appendChild(imgIcon);
+
+    // Hidden file input for uploading images
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".png, .jpeg, .jpg"; // Restrict file types
+    fileInput.style.display = "none";
+
+    // Open file dialog when clicking the image button
+    addImgBtn.addEventListener("click", function () {
+        fileInput.click();
+    });
+
+    // Handle file upload and preview
+    fileInput.addEventListener("change", function () {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imgIcon.src = e.target.result; // Update the image preview
+                updateCard(cardCon); // Optionally update card data
+                removeImgBtn.style.display = "inline"; // Show remove button
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Remove Image Button
+    const removeImgBtn = document.createElement("button");
+    removeImgBtn.classList.add("remove-img-btn");
+    removeImgBtn.textContent = "Remove Image";
+    removeImgBtn.style.display = "none"; // Initially hidden
+    removeImgBtn.addEventListener("click", function () {
+        imgIcon.src = "/images/image.svg"; // Reset to default icon
+        fileInput.value = ""; // Clear file input
+        removeImgBtn.style.display = "none"; // Hide remove button
+        updateCard(cardCon); // Optionally update card data
+    });
+
+    // Delete Button
+    const deleteButton = document.createElement("button");
     deleteButton.classList.add("deleteBtn");
-    deleteButton.onclick = function() {
+    deleteButton.onclick = function () {
         deleteCard(cardCon);
     };
     const deleteText = document.createTextNode("X");
@@ -65,6 +115,9 @@ function buildCard(card, cardList, i) {
     cardCon.appendChild(br1);
     cardCon.appendChild(term);
     cardCon.appendChild(definition);
+    cardCon.appendChild(addImgBtn);
+    cardCon.appendChild(fileInput); // Hidden input for image upload
+    cardCon.appendChild(removeImgBtn); // Add remove image button
     cardCon.appendChild(deleteButton);
     cardList.appendChild(cardCon);
 }
