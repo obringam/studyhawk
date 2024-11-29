@@ -6,18 +6,20 @@ public class Card{
     private String term;
     private String definition;
     private boolean favorite;
+    private String image;
 
     public Card() {}
 
-    public Card(String term, String definition, boolean favorite) {
-        this(0, term, definition, favorite);
+    public Card(String term, String definition, boolean favorite, String image) {
+        this(0, term, definition, favorite, image);
     }
 
-    public Card(int deckID, String term, String definition, boolean favorite) {
+    public Card(int deckID, String term, String definition, boolean favorite, String image) {
         this.deckID = deckID;
         this.term = term;
         this.definition = definition;
         this.favorite = favorite;
+        this.image = image;
     }
 
     public void setCardID(int cardID) {
@@ -40,6 +42,10 @@ public class Card{
         this.favorite = favorite;
     }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public int getCardID() {
         return this.cardID;
     }
@@ -58,6 +64,10 @@ public class Card{
 
     public boolean getFavorite() {
         return this.favorite;
+    }
+
+    public String getImage() {
+        return this.image;
     }
 
     @Override

@@ -108,16 +108,34 @@ function displayCard() {
         cardDiv.id = "card-" + card["cardID"];
         cardDiv.onclick = function () {flipCard()};
 
+        // XOR logic for whether the card is flipped and the term should go on the front
         if ((flipped || isTermOnFront) && !(flipped && isTermOnFront)) {
             // Term is shown
             const term = document.createTextNode(card["term"]);
             cardDiv.appendChild(term);
             cardDiv.classList.add("term");
         } else {
+
+            const image = card["image"];
+
+            if (image != null) { // If there is an image
+
+                const imageElement = document.createElement("img");
+                imageElement.classList.add("image");
+                imageElement.src = "data:image/jpeg;base64," + image;
+                cardDiv.appendChild(imageElement);
+                cardDiv.classList.add("definition-with-image");
+
+            } else {
+
+                cardDiv.classList.add("definition");
+
+            }
+
             // Definition is shown
             const definition = document.createTextNode(card["definition"]);
             cardDiv.appendChild(definition);
-            cardDiv.classList.add("definition");
+
         }
 
         // Update card position label

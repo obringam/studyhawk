@@ -1,13 +1,16 @@
 package org.studyhawk;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
 
@@ -306,7 +309,8 @@ public class DatabaseHandler {
                         result.getInt("deckID"),
                         result.getString("term"),
                         result.getString("definition"),
-                        result.getBoolean("favorite")
+                        result.getBoolean("favorite"),
+                        convertBlobToBase64(result.getBlob("image"))
                     );
                     card.setCardID(result.getInt("cardID"));
                     cards.add(card);
@@ -532,12 +536,17 @@ public class DatabaseHandler {
 
         try {
             for (Card card : cards) {
-                String updateSQL = "UPDATE studyhawk.Cards SET term = ?, definition = ? WHERE cardID = ?";
+                String updateSQL = "UPDATE studyhawk.Cards SET term = ?, definition = ?, image = ? WHERE cardID = ?";
                 PreparedStatement statement = conn.prepareStatement(updateSQL);
 
                 statement.setString(1, card.getTerm());
                 statement.setString(2, card.getDefinition());
-                statement.setInt(3, card.getCardID());
+                if (card.getImage() == null) {
+                    statement.setNull(3, java.sql.Types.BLOB);
+                } else {
+                    statement.setBytes(3, convertBase64ToBytes(card.getImage()));
+                }
+                statement.setInt(4, card.getCardID());
 
                 statement.executeUpdate();
 
@@ -563,12 +572,17 @@ public class DatabaseHandler {
         getDeckByID(card.getDeckID()); // Ensure access to the deck
 
         try {
-            String updateSQL = "UPDATE studyhawk.Cards SET term = ?, definition = ? WHERE cardID = ?";
+            String updateSQL = "UPDATE studyhawk.Cards SET term = ?, definition = ?, image = ? WHERE cardID = ?";
             PreparedStatement statement = conn.prepareStatement(updateSQL);
 
             statement.setString(1, card.getTerm());
             statement.setString(2, card.getDefinition());
-            statement.setInt(3, card.getCardID());
+            if (card.getImage() == null) {
+                statement.setNull(3, java.sql.Types.BLOB);
+            } else {
+                statement.setBytes(3, convertBase64ToBytes(card.getImage()));
+            }
+            statement.setInt(4, card.getCardID());
 
             statement.executeUpdate();
 
@@ -638,13 +652,19 @@ public class DatabaseHandler {
 
         try {
             for (Card card : cards) {
-                String insertSQL = "INSERT INTO studyhawk.Cards (deckID, term, definition, favorite) VALUES(?,?,?,?)";
+                String insertSQL = "INSERT INTO studyhawk.Cards (deckID, term, definition, favorite, image) VALUES(?,?,?,?,?)";
                 PreparedStatement statement = conn.prepareStatement(insertSQL);
 
                 statement.setInt(1, card.getDeckID());
                 statement.setString(2, card.getTerm());
                 statement.setString(3, card.getDefinition());
                 statement.setBoolean(4, card.getFavorite());
+                if (card.getImage() == null) {
+                    statement.setNull(5, java.sql.Types.BLOB);
+                } else {
+                    statement.setBytes(5, convertBase64ToBytes(card.getImage()));
+                }
+
 
                 statement.executeUpdate();
 
@@ -679,13 +699,18 @@ public class DatabaseHandler {
         }
 
         try {
-            String insertSQL = "INSERT INTO studyhawk.Cards (deckID, term, definition, favorite) VALUES(?,?,?,?)";
+            String insertSQL = "INSERT INTO studyhawk.Cards (deckID, term, definition, favorite, image) VALUES(?,?,?,?,?)";
             PreparedStatement statement = conn.prepareStatement(insertSQL);
 
             statement.setInt(1, card.getDeckID());
             statement.setString(2, card.getTerm());
             statement.setString(3, card.getDefinition());
             statement.setBoolean(4, card.getFavorite());
+            if (card.getImage() == null) {
+                statement.setNull(5, java.sql.Types.BLOB);
+            } else {
+                statement.setBytes(5, convertBase64ToBytes(card.getImage()));
+            }
 
             statement.executeUpdate();
 
@@ -1085,6 +1110,38 @@ public class DatabaseHandler {
             return deckOwnership.getPrivelage();
         }
 
+    }
+
+    /**
+     * Converts a blob to base64
+     * @param blob Blob object
+     * @return Base64 string
+     */
+    public static String convertBlobToBase64(Blob blob) {
+        if (blob == null)
+            return null;
+
+        try {
+            // Get the binary data as a byte array
+            byte[] blobBytes = blob.getBytes(1, (int) blob.length());
+
+            // Encode the byte array to a Base64 string
+            String base64String = Base64.getEncoder().encodeToString(blobBytes);
+
+            return base64String;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Converts a base64 string to a byte array for blob insertion
+     * @param base64String Base64 string
+     * @return Byte array
+     */
+    public static byte[] convertBase64ToBytes(String base64String) {
+        return Base64.getDecoder().decode(base64String);
     }
 
 }
