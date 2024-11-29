@@ -41,6 +41,7 @@ function buildCard(card, cardList, i) {
 
     const term = document.createElement("input");
     term.classList.add("card-input", "term-input");
+    term.maxLength = 100;
     term.value = card["term"];
     term.placeholder = "Term";
     term.addEventListener("input", function () {
@@ -49,6 +50,7 @@ function buildCard(card, cardList, i) {
 
     const definition = document.createElement("input");
     definition.classList.add("card-input", "definition-input");
+    definition.maxLength = 500;
     definition.value = card["definition"];
     definition.placeholder = "Definition";
     definition.addEventListener("input", function () {
@@ -62,11 +64,11 @@ function buildCard(card, cardList, i) {
     const imgIcon = document.createElement("img");
     imgIcon.classList.add("img-icon");
     imgIcon.setAttribute("src", "/images/image.svg");
-    imgIcon.style.height = "25px"; // Set image height to 25px
     addImgBtn.appendChild(imgIcon);
 
     // Hidden file input for uploading images
     const fileInput = document.createElement("input");
+    fileInput.classList.add("image-input");
     fileInput.type = "file";
     fileInput.accept = ".png, .jpeg, .jpg"; // Restrict file types
     fileInput.style.display = "none";
@@ -80,6 +82,15 @@ function buildCard(card, cardList, i) {
     fileInput.addEventListener("change", function () {
         const file = fileInput.files[0];
         if (file) {
+            const fileSizeInBytes = file.size; // File size in bytes
+            const fileSizeInKB = (fileSizeInBytes / 1024).toFixed(2); // Convert bytes to KB
+            const fileSizeInMB = (fileSizeInBytes / (1024 * 1024)).toFixed(2); // Convert bytes to MB
+
+            if (fileSizeInMB > 8) {
+                alert('Image exceeds maximum size of 8 MB');
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function (e) {
                 imgIcon.src = e.target.result; // Update the image preview
@@ -99,8 +110,14 @@ function buildCard(card, cardList, i) {
         imgIcon.src = "/images/image.svg"; // Reset to default icon
         fileInput.value = ""; // Clear file input
         removeImgBtn.style.display = "none"; // Hide remove button
-        updateCard(cardCon); // Optionally update card data
+        removeImage(cardCon);
     });
+
+    // Load existing images
+    if (card["image"] != null) { // If there is already a loaded image
+        imgIcon.src = "data:image/jpeg;base64, " + card["image"];
+        removeImgBtn.style.display = "inline";
+    }
 
     // Delete Button
     const deleteButton = document.createElement("button");
@@ -120,6 +137,20 @@ function buildCard(card, cardList, i) {
     cardCon.appendChild(removeImgBtn); // Add remove image button
     cardCon.appendChild(deleteButton);
     cardList.appendChild(cardCon);
+}
+
+// Returns an image URL from the byte data
+function createImageURL(bytes) {
+
+    // Convert the byte array to a Blob
+    const blob = new Blob([bytes], { type: 'image/png' });
+
+    // Generate a URL for the Blob
+    const imageUrl = URL.createObjectURL(blob);
+
+    console.log(imageUrl);
+
+    return imageUrl;
 }
 
 function displayCards() {
@@ -200,7 +231,8 @@ function addCard() {
         cardID: newCardID,
         term: "",
         definition: "",
-        favorite: false
+        favorite: false,
+        image: null
     };
 
     // Add the new card to the JSON list
@@ -263,11 +295,28 @@ function updateCard(card) {
     // Get term and definition from page
     const cardTerm = card.querySelector('.term-input').value;
     const cardDefinition = card.querySelector('.definition-input').value;
+    const fileInput = card.querySelector('.image-input').value;
+    const imagePreview = card.querySelector('.img-icon').src;
 
     // Assign to term and definition in JSON
     cardJSON["term"] = cardTerm;
     cardJSON["definition"] = cardDefinition;
+    if (fileInput != "") { // If a image file is selected
+        cardJSON["image"] = imagePreview.split("base64,")[1]; // Update the cardJSON with the new image
+    }
 
+    changesNotSavedAction();
+}
+
+// Remove an image from a card
+function removeImage(card) {
+    // Get the actual card ID from the div element ID
+    const extractedID = card.id.substring(5);
+
+    // Get the card JSON from the JSON list for the given ID
+    const cardJSON = getCardJSONByID(extractedID);
+
+    cardJSON["image"] = null
     changesNotSavedAction();
 }
 
@@ -288,17 +337,24 @@ function saveChanges() {
 
         const cardTerm = card.querySelector('.term-input').value;
         const cardDefinition = card.querySelector('.definition-input').value;
+        const fileInput = card.querySelector('.image-input').value;
+        var cardImage;
+        if (fileInput != "") { // If an image file is selected
+            cardImage = card.querySelector('.img-icon').src.split("base64,")[1];
+        } else {
+            cardImage = null;
+        }
 
         if (potentialAddID == 'add') {
             // If it is a new card, create and push to add list
             const cardJSON = {
                 term: cardTerm,
-                definition: cardDefinition
+                definition: cardDefinition,
+                image: cardImage
             }
             addList.push(cardJSON);
         } else {
             // If it is an existing card, push to edit list
-
             // Get the card JSON from the JSON list for the given ID
             const cardJSON = getCardJSONByID(extractedID);
             if (cardJSON != null) {
@@ -346,6 +402,7 @@ function saveChanges() {
 
     // Edit cards
     if (editList != null && editList.length != 0) {
+        console.log(editList);
         requests.push($.ajax({
             type: "POST",
             contentType: "application/json",

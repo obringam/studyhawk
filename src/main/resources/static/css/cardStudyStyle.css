@@ -63,6 +63,7 @@ header .navbar-brand:visited {
 
 .card-style {
     display: flex;
+    flex-direction: column;
     text-align: center;
     align-items: center;
     justify-content: center;
@@ -81,14 +82,26 @@ header .navbar-brand:visited {
     -o-transition: background-color 0.05s ease-in;
 }
 
+.image {
+    max-width: 50%;
+    max-height: 50%;
+    object-fit: contain;
+    margin-bottom: 2%;
+}
+
 .term {
-    line-height: 6vw;
-    font-size: 5vw;
+    line-height: 5vw;
+    font-size: 4vw;
 }
 
 .definition {
-    line-height: 4vw;
-    font-size: 3vw;
+    line-height: 3vw;
+    font-size: 2vw;
+}
+
+.definition-with-image {
+    line-height: 2vw;
+    font-size: 1vw;
 }
 
 .card-style:hover {
