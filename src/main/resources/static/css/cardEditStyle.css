@@ -5,7 +5,7 @@
 
 header nav {
     background-color: #b61e2e;
-    height: 75px;
+    z-index: 9999;
 }
 
 header .navbar-brand {
@@ -74,7 +74,7 @@ header .navbar-brand:visited {
     border-bottom: 2px solid #ccc; /* Light underline color */
     outline: none;
     padding: 5px 0;
-    margin-right: 25px;
+    margin-right: 10px;
     transition: border-color 0.3s ease;
 }
 
@@ -84,6 +84,25 @@ header .navbar-brand:visited {
 
 .card-input:hover {
   border-bottom-color: #333; /* Darker color on hover */
+}
+
+.imgbtn {
+    background-color: white;
+    border: none;
+    border-radius: 25px;
+}
+
+.imgbtn:hover {
+    background-color: lightgray;
+    border: none;
+    border-radius: 25px;
+}
+
+.img-icon {
+    padding-bottom: 6px;
+    padding-left: 7px;
+    padding-right: 7.5px;
+    padding-top: 5px;
 }
 
 .new-card-btn {
@@ -106,13 +125,11 @@ header .navbar-brand:visited {
 }
 
 .deleteBtn {
-    background-color: transparent;
+    background-color: white;
     color: black;
-    border: transparent;
-    border-width: 0;
-    width: 40px;
-    aspect-ratio: 1 / 1;
-    border-radius: 50px;
+    border: none;
+    padding: 7px;
+    border-radius: 25px;
     font-size: 15px;
     border-radius: 20px;
     -webkit-border-radius: 50px;
@@ -122,5 +139,5 @@ header .navbar-brand:visited {
 }
 
 .deleteBtn:hover {
-    background-color: rgb(220, 220, 220);
+    background-color: lightgray;
 }
