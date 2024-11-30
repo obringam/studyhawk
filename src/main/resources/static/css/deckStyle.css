@@ -12,6 +12,10 @@ header nav {
     z-index: 9999;
 }
 
+header nav .logo {
+    color: white;
+}
+
 header .navbar-brand {
     font-family: 'roboto';
     font-style: italic;
