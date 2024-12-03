@@ -160,6 +160,11 @@ public class DatabaseHandler {
             deckIDs.add(deckOwnership.getDeckID());
         }
 
+        if (deckIDs.isEmpty()) {
+            DatabaseHandler.closeConnection(conn);
+            return decks;
+        }
+
         // Get decks from database
         try {
 
@@ -196,6 +201,7 @@ public class DatabaseHandler {
         } catch (SQLException queryFailed) {
             System.out.println("[ERROR] DECKS QUERY FAILED");
             System.out.println(queryFailed.getMessage());
+            queryFailed.printStackTrace();
         }
 
         DatabaseHandler.closeConnection(conn);
